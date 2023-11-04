@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/dist/css/indexresult.css">
+    <title>XpertDO | Result</title>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="top-header">
+        <a href="indexweb.html" class="logo">
+            <img class="logo1" src="../static/dist/img/logo1.png" alt="XpertDO's Logo">
+        </a>
+        <div class="menu">
+            <a class="menu-item" href="indexweb.html">Home</a>
+            <a class="menu-item" href="indexweb.html#information">Information</a>
+            <a class="menu-item" href="indexweb.html#diagnose">Diagnose</a>
+            <a class="menu-item1" href="indexweb.html#about">About</a>
+        </div>
+        <div class="menu1">
+            <a href="loginweb.html" class="menu-item2">
+                <i class="fas fa-user"></i> &nbsp; Admin</a>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <section id="diagnosis" class="diag">
+        <div>
+        </br></br>
+            <p>Hai, {{ name }}. This is your diagnosis result!</p>
+            </br>
+        </br></br></br>
+        </div>
+    </section>
+    <section id="home" class="cont-diag">
+        <p class="title">Hasil Diagnosa</p>
+        <div class="container">
+            <div class="center-box">
+                <div class="dashed1">
+                </br>
+                    <p>D I A G N O S A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <strong> {{ disease }}</strong></p>
+                </br></br>
+                    <p>S I M I L A R I T Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :<strong> {{ hasil }}</strong></p>
+                </div>
+            </div>
+            <div class="container2">
+                <div class="center-boxr">
+                    <div class="dashed2">
+                    </br>
+                        <p>P E N G O B A T A N</p>
+                    </br>
+                        <ol>
+                            <li>{{pengobatan 1}}</li>
+                            <li>{{pengobatan 2}}</li>
+                            <li>{{pengobatan 3}}</li>
+                            <li>{{pengobatan 4}}</li>
+                            <li>{{pengobatan 5}}</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="center-boxl">
+                    <div class="dashed3">
+                        <P>P E N C E G A H A N</P>
+                    </br>
+                        <ol>
+                            <li>{{pencegahan 1}}</li>
+                            <li>{{pencegahan 2}}</li>
+                            <li>{{pencegahan 3}}</li>
+                            <li>{{pencegahan 4}}</li>
+                            <li>{{pencegahan 5}}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <button id="next" type="button" onclick="location.href='indexweb.html';">F I N I S H</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <section id="footer" class="cont-about2">
+        <section class="lefty">
+            <h1 class="xpert">XpertDO</h1>
+            <h2 class="isi">Website Sistem Pakar Diagnosis Penyakit Gigi dan Mulut</h2>
+            <h2 class="isi">Institut Teknologi Telkom Purwokerto | Purwokerto | Indonesia | 2023</h2>
+        </section>
+        <section class="righty">
+            <a href="https://www.instagram.com/tiara_hp/" class="iga fab fa-instagram" target="_blank"></a>
+            <a href="tel:085711478769" class="phonea fas fa-phone"></a>
+            <a href="mailto:20102196@ittelkom-pwt.ac.id" class="maila fas fa-envelope"></a>
+        </section>
+    </section>
+    <section>
+        <h3 class="abou">Copyright © Website XpertDO 2023 | Credit By: Tiara Humaira Putri</h3>
+    </section>
+</body>
