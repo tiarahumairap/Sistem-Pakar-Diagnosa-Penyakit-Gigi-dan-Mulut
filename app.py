@@ -2,7 +2,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route("/indexweb")
+@app.route("/")
 def home():
     return render_template('indexweb.html')
 
@@ -19,8 +19,8 @@ def dtdiag():
     return render_template('indexdata.html')
 
 
-@app.route('/') #index
-def main():
+@app.route('/indexadm') #index
+def indexadm():
     return render_template('indexadm.html')
 
 @app.route('/gejala') #index
