@@ -8,13 +8,14 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../static/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename = '../static/plugins/fontawesome-free/css/all.min.css')}}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../static/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename = '../static/dist/css/adminlte.min.css')}}">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
+  <!-- Navbar -->
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -22,7 +23,14 @@
       <img src="../static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
     </a>
   <!-- Navbar -->
-  <!-- /.na
+  <nav class="main-header navbar navbar-expand navbar-dark">
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button"></a>
+      </li>
+    </ul>
+  </nav>
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -40,7 +48,7 @@
                with font-awesome or any other icon font library -->
           <li class="nav-header">HOME</li>
           <li class="nav-item">
-            <a href="/" class="nav-link">
+            <a href="/indexadm" class="nav-link">
               <i class="nav-icon fas fa-home"></i>
               <p>
                 Dashboard
@@ -74,7 +82,7 @@
           </li>
           <li class="nav-header">LOGOUT</li>
           <li class="nav-item">
-            <a href="../static/pages/widgets.html" class="nav-link">
+            <a href="/" class="nav-link">
               <i class="nav-icon fas fa-power-off"></i>
               <p>
                 Logout
@@ -191,10 +199,7 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
-      <b>Version</b> 3.2.0
-    </div>
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    Copyright  &copy; Website 2023 <strong> XpertDO</strong> | Credit By: Tiara Humaira Putri
   </footer>
 
   <!-- Control Sidebar -->
