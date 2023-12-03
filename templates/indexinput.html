@@ -39,7 +39,7 @@
         <div class="container">
             <div class="center-box">
                 <p></p>
-                <form action="/submit" method="POST" class="form">
+                <form action="/addu" method="POST" class="form">
                     <div class="title">
                         <label for="name">&nbsp;&nbsp;Your&nbsp;Name</label>
                     </br></br>
@@ -56,13 +56,13 @@
                         <label for="gender">&nbsp;&nbsp;Jenis Kelamin</label>
                     </br></br>
                     <p></p>
-                        <input type="radio" id="male" name="gender" value="Laki-Laki">
-                        <label class="jk" for="male">Laki-Laki&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input type="radio" id="female" name="gender" value="Perempuan">
-                        <label class="jk" for="female">Perempuan</label>
+                        <input type="radio" id="jk_l" name="jk" value="L">
+                        <label class="jk_l" for="jk_l">Laki-Laki&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input type="radio" id="jk_p" name="jk" value="P">
+                        <label class="jk_l" for="jk_l">Perempuan</label>
                     </div>
                     <div class="submit">
-                        <input onclick="window.location.href='/dtdiag';" type="submit" value="N E X T">
+                        <button type="submit">N E X T</button>
                     </div>
                 </form>
             </div>

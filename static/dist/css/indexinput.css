@@ -155,9 +155,9 @@
     font-size: medium;
 }
 
-div.submit input[type="submit"]{
+div.submit button[type="submit"]{
     margin-left: 1.2cm;
-    margin-top: 0.5cm;
+    margin-top: 1.2cm;
     width: 450px;
     height: 50px;
     font-size: 18px;
@@ -167,7 +167,7 @@ div.submit input[type="submit"]{
     border-radius: 10px;
     font-weight:bold;
 }
-div.submit input[type="submit"]:hover{
+div.submit button[type="submit"]:hover{
     background-color: #472f5bb6;
 }
 

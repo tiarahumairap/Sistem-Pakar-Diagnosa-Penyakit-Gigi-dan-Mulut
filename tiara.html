@@ -1,0 +1,123 @@
+import mysql.connector
+
+# Inisialisasi db sebagai objek global
+db = None
+
+def initialize_database():
+    global db
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="xpertdo_trying"
+    )
+
+    return db
+
+def get_database_cursor():
+    return db.cursor()
+
+def create_database():
+    cursor = get_database_cursor()
+
+    # Membuat tabel users jika belum ada
+    cursor.execute("CREATE TABLE IF NOT EXISTS users (id VARCHAR(5) PRIMARY KEY, name VARCHAR(255) NOT NULL, age INT, jk CHAR(1) CHECK (jk IN ('L', 'P')))")
+
+    # Membuat tabel symptom jika belum ada
+    cursor.execute("CREATE TABLE IF NOT EXISTS symptoms (kode_gejala VARCHAR(5) PRIMARY KEY, gejala VARCHAR(255) NOT NULL, bobot INT)")
+
+    cursor.close()
+
+def id_user():
+    cursor = get_database_cursor()
+
+    cursor.execute("SELECT id FROM users ORDER BY id DESC LIMIT 1")
+    result = cursor.fetchone()
+
+    if result:
+        last_idu = result[0]
+        next_idu = f'#{int(last_idu[1:]) + 1:02d}'
+    else:
+        next_idu = '#01'
+
+    cursor.close()
+
+    return next_idu
+
+def kode_gejala():
+    cursor = get_database_cursor()
+
+    cursor.execute("SELECT kode_gejala FROM symptoms ORDER BY kode_gejala DESC LIMIT 1")
+    result = cursor.fetchone()
+
+    if result:
+        last_idg = result[0]
+        next_idg = f'G{int(last_idg[1:]) + 1:02d}'
+    else:
+        next_idg = 'G01'
+
+    cursor.close()
+
+    return next_idg
+
+def insert_symptoms():
+    cursor = get_database_cursor()
+
+    # Mendapatkan ID gejala terbaru
+    next_idgejala = kode_gejala()
+
+    # List data gejala beserta bobotnya
+    symptoms_data = [
+        ("G01", "Lubang yang terlihat pada gigi", 5),
+        ("G02", "Noda berwarna coklat kehitaman yang terdapat pada permukaan gigi", 3),
+        ("G03", "Riwayat nyeri saat mengonsumsi makanan manis/panas/dingin atau saat makanan masuk/menyangkut", 5),
+        ("G04", "Gigi terasa ngilu dan lebih sensitif", 5),
+        ("G05", "Bau mulut yang tidak sedap", 1),
+        ("G06", "Pembengkakan gusi di bagian samping disertai nanah", 5),
+        ("G07", "Gusi kemerahan", 3),
+        ("G08", "Salah satu gigi yang terlibat mengalami kegoyangan", 3),
+        ("G09", "Gigi terasa sakit ketika mengunyah dan timbul rasa nyeri", 5),
+        ("G10", "Gusi terasa lunak", 3),
+        ("G11", "Terdapat karies gigi", 5),
+        ("G12", "Pembengkakan pada bagian akar gigi (bagian dalam gusi) sehingga gigi terasa timbul", 5),
+        ("G13", "Sakit gigi ketika diketuk/perkusi", 5),
+        ("G14", "Akar gigi yang terekspos (dentin) sensitif terhadap panas dan dingin akibat resesi gusi", 5),
+        ("G15", "Terdapat cekungan pada permukaan gigi (dekat gusi bagian enamel) yang berwarna kecoklatan", 3),
+        ("G16", "Riwayat cara menyikat gigi yang salah", 3),
+        ("G17", "Enamel gigi yang rusak, mengekspos lapisan dalam gigi", 3),
+        ("G18", "Gigi tidak terlihat sama sekali atau hanya muncul sedikit di permukaan gusi", 5),
+        ("G19", "Gusi bengkak dan kemerahan di sekitar gigi terpendam", 5),
+        ("G20", "Nyeri pada rahang dan kesulitan membuka mulut", 3),
+        ("G21", "Pembesaran kelenjar getah bening di leher dan sakit ketika ditekan", 3),
+        ("G22", "Sakit kepala yang terjadi secara terus menerus", 1),
+        ("G23", "Ketidakmampuan untuk menggigit makanan dengan benar ("gigitan terbuka)", 5),
+        ("G24", "Susunan gigi yang tidak normal", 5),
+        ("G25", "Perubahan struktur wajah", 3),
+        ("G26", "Kesulitan atau ketidaknyamanan saat menggigit atau mengunyah", 5),
+        ("G27", "Gangguan atau kesulitan berbicara", 3),
+        ("G28", "Luka atau bercak putih atau kemerahan di dalam mulut dan tenggorokan", 5),
+        ("G29", "Kesulitan untuk menelan, makan maupun berbicara", 5),
+        ("G30", "Sensasi terbakar atau sakit saat makan maupun minum", 3),
+        ("G31", "Mulut dan gusi yang merah, mengkilap, dan bengkak", 5),
+        ("G32", "Mulut terasa kering", 3),
+        ("G33", "Gusi mudah berdarah saat sikat gigi atau flossing (menggunakan benang dental)", 5),
+        ("G34", "Gusi bengkak atau besar karena edema", 3),
+        ("G35", "Penumpukan plak dan karang gigi pada gigi", 5),
+        ("G36", "Gejala prodormal berupa rasa terbakar dan sakit pada kelenjar limfoid regional/mukosa area sekitar sariawan", 3),
+        ("G37", "Luka sariawan berbentuk bulat/oval berwarna putih kekuningan", 5),
+        ("G38", "Area luka dikelilingi oleh kemerahan", 5),
+        ("G39", "Rasa nyeri pada area luka sariawan", 5),
+        ("G40", "Berlangsung selama 7-14 hari dan dapat muncul kembali di lain waktu (rekuren)", 3)
+    ]
+
+    try:
+        # Memasukkan data gejala ke dalam tabel symptoms
+        cursor.executemany("INSERT INTO symptoms (kode_gejala, gejala, bobot) VALUES (%s, %s, %s)", symptoms_data)
+        db.commit()  # Pastikan commit dilakukan di sini
+        print("Data gejala berhasil dimasukkan ke dalam tabel symptoms.")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        db.rollback()
+    finally:
+        cursor.close()
+

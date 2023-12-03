@@ -29,7 +29,7 @@
     <section id="diagnosis" class="diag">
         <div>
         </br></br>
-            <p>Hai, {{ name }}. Welcome to diagnosis area!</p>
+            <p>Hai, {{ uname }}! Welcome to diagnosis area!</p>
             </br>
             <h2>Now you can choose at least <strong> 5 symptoms</strong> that you feel!</h2>
         </br></br></br>
@@ -39,39 +39,16 @@
         <div class="container">
             <div class="center-box">
                 <div class="dashed">
-                    <p class="space">
-                        <input id="box" type="checkbox" />
-                        <label for="box1">{{Symptom 1}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box2">{{Symptom 2}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box3">{{Symptom 3}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box1">{{Symptom 4}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box2">{{Symptom 5}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box3">{{Symptom 6}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box1">{{Symptom 7}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box2">{{Symptom 8}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box3">{{Symptom 9}}</label>
-                        <p></p>
-                        <input id="box" type="checkbox" />
-                        <label for="box3">{{Symptom 10}}</label>
-                    </br>
-                    </p>
-                    <button id="next" type="button" onclick="location.href='indexresult.html';">N E X T</button>
+                    <form action="/submit_diagnosis" method="post">
+                        <p class="space">
+                            {% for gejala in symptoms %}
+                                <input type="checkbox" class="checkbox" id="box" id="{{ gejala.kode_gejala }}" name="gejala" value="{{ gejala.kode_gejala }}">
+                                <label class="checkbox-label" for="box{{ gejala.kode_gejala }}">{{ gejala.gejala }}</label><br>
+                            {% endfor %}
+                        </br>
+                        </p>
+                    </form>
+                    <button id="next" class="next" type="button" onclick="location.href='indexresult.html';">N E X T</button>
                 </div>
             </div>
         </div>
@@ -93,4 +70,27 @@
     <section>
         <h3 class="abou">Copyright © Website XpertDO 2023 | Credit By: Tiara Humaira Putri</h3>
     </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var checkboxes = document.querySelectorAll('.checkbox');
+            var maxCheckboxCount = 5;
+            function handleCheckboxClick() {
+                var checkedCheckboxes = document.querySelectorAll('.checkbox:checked');
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.disabled = false;
+                });
+                if (checkedCheckboxes.length >= maxCheckboxCount) {
+                    checkboxes.forEach(function (checkbox) {
+                        if (!checkbox.checked) {
+                            checkbox.disabled = true;
+                        }
+                    });
+                }
+            }
+
+            checkboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('click', handleCheckboxClick);
+            });
+        });
+    </script>
 </body>
