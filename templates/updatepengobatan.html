@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XpertDO | Diseases - Update</title>
+  <title>XpertDO | Treatments - Update</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -112,7 +112,6 @@
     <!-- /.sidebar -->
   </aside>
 
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -120,12 +119,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 fas fa-disease">&nbsp;&nbsp;Update Penyakit</h1>
+            <h1 class="m-0 fas fa-book">&nbsp;&nbsp;Update Pengobatan</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/penyakit">Penyakit</a></li>
-              <li class="breadcrumb-item active">Update Penyakit</li>
+              <li class="breadcrumb-item"><a href="/pengobatan">Pengobatan</a></li>
+              <li class="breadcrumb-item active">Update Pengobatan</li>
             </ol>
           </div>
         </div>
@@ -141,7 +140,7 @@
             <!-- jquery validation -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Ubah Penyakit</h3>
+                <h3 class="card-title">Ubah Pengobatan</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -152,49 +151,17 @@
                     <input type="text" name="id" class="form-control" id="exampleInputID" placeholder="ID">
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputText">Nama Penyakit</label>
-                    <input type="text" name="penyakit" class="form-control" id="exampleInputText" placeholder="Penyakit">
+                    <label for="exampleInputText">Pengobatan</label>
+                    <input type="text" name="pengobatan" class="form-control" id="exampleInputText" placeholder="Pengobatan">
                   </div>
-                  <div class="form-group">
-                    <label for="exampleInputText">Definisi Penyakit</label>
-                    <textarea type="text" name="definisi" class="form-control" placeholder="Definisi..."></textarea>
-                  </div>
-                  <div class="form-group1">
-                    <div class="column">
-                        <label for="symptom">Kode</label>
-                        <input type="text" name="symptom" class="form-control" id="symptom" placeholder="Kode Pengobatan">
-                    </div>
-                    <div class="column">
-                        <label for="weight">Pengobatan</label>
-                        <input type="number" name="weight" class="form-control" id="weight" placeholder="Rekomendasi Pengobatan">
-                    </div>
-                  </div>
-                </br>
-                <button type="button" class="btn btn-primary" id="add-treatment"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pengobatan</button>
-                </br>
-                </br>
-                <div class="form-group2">
-                  <div class="column">
-                      <label for="symptom">Kode</label>
-                      <input type="text" name="symptom" class="form-control" id="symptom" placeholder="Kode Pencegahan">
-                  </div>
-                  <div class="column">
-                      <label for="weight">Pencegahan</label>
-                      <input type="number" name="weight" class="form-control" id="weight" placeholder="Saran Pencegahan">
-                  </div>
-                </div>
-              </br>
-              <button type="button" class="btn btn-primary" id="add-treatment2"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pencegahan</button>
-              </br>
-              </br>
                 <!-- /.card-body -->
                 <div class="card-footer">
                   <div class="button-container">
                     <div class="lefty">
-                      <a href="/penyakit" class="btn btn-primary1">Cancel</a>
+                      <a href="/pengobatan" class="btn btn-primary1">Cancel</a>
                     </div>
                     <div class="right">
-                      <button type="submit" class="btn btn-primary1">Add</button>
+                      <button type="submit" class="btn btn-primary1">Save</button>
                     </div>
                   </div>
                 </div>
@@ -241,47 +208,7 @@
 <script src="../static/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Page specific script -->
-<script>
-  $(document).ready(function(){
-   $("#add-treatment").click(function(){
-      $(".form-group1").last().after('<div class="form-group1">' +
-                                            '<div class="column">' +
-                                                '<label for="symptom">Kode</label>' +
-                                                '<input type="text" name="symptom" class="form-control" id="symptom" placeholder="Kode">' +
-                                            '</div>' +
-                                            '<div class="column">' +
-                                                '<label for="weight">Rekomendasi Pengobatan</label>' +
-                                                '<input type="number" name="weight" class="form-control" id="weight" placeholder="Rekomendasi Pengobatan">' +
-                                            '</div>' +
-                                        '</div>');
-      if($(".form-group1").length == 5) {
-        $("#add-treatment").prop('disabled', true);
-      }
-   });
-  });
-  </script>
-<script>
-  $(document).ready(function(){
-   $("#add-treatment2").click(function(){
-      $(".form-group2").last().after('<div class="form-group2">' +
-                                            '<div class="column">' +
-                                                '<label for="symptom">Kode</label>' +
-                                                '<input type="text" name="symptom" class="form-control" id="symptom" placeholder="Kode">' +
-                                            '</div>' +
-                                            '<div class="column">' +
-                                                '<label for="weight">Saran Pencegahan</label>' +
-                                                '<input type="number" name="weight" class="form-control" id="weight" placeholder="Saran Pencegahan">' +
-                                            '</div>' +
-                                        '</div>');
-  
-      if($(".form-group2").length == 5) {
-        $("#add-treatment2").prop('disabled', true);
-      }
-   });
-  });
-  </script>
 <script>
 $(function () {
   $.validator.setDefaults({

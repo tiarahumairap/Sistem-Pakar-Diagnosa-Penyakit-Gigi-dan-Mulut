@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XpertDO | Symptom Admin</title>
+  <title>XpertDO | Symptoms Admin</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -84,6 +84,22 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="/pengobatan" class="nav-link">
+              <i class="nav-icon fas fa-stethoscope"></i>
+              <p>
+                Pengobatan
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/pencegahan" class="nav-link">
+              <i class="nav-icon fas fa-medkit"></i>
+              <p>
+                Pencegahan
+              </p>
+            </a>
+          </li>
           <li class="nav-header">LOGOUT</li>
           <li class="nav-item">
             <a href="/" class="nav-link">
@@ -150,7 +166,7 @@
                           <td>{{ symptom.gejala }}</td>
                           <td>{{ symptom.bobot }}</td>
                           <td>
-                              <a href="/updategejala/{{ symptom.kode }}" class="custom-button">
+                              <a href="/updategejala" class="custom-button">
                                   <i class="fas fa-pen"></i>
                               </a>&nbsp;&nbsp;&nbsp;
                               <a href="#" class="alertbutton custom-button">
@@ -163,9 +179,9 @@
                   <tfoot>
                   <tr>
                     <th>No.</th>
-                    <th>ID Penyakit</th>
-                    <th>Penyakit</th>
-                    <th>Jumlah Gejala</th>
+                    <th>ID Gejala</th>
+                    <th>Gejala</th>
+                    <th>Bobot</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>

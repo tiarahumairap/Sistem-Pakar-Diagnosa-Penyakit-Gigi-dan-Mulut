@@ -167,6 +167,39 @@ def addbasis():
 def detailbasis():
     return render_template('detailbasis.html')
 
+@app.route('/pengobatan')
+def pengobatan():
+    cursor.execute("SELECT * FROM treatments")
+    treatments = cursor.fetchall()
+    db.commit()
+    print(treatments)
+
+    return render_template('pengobatanadm.html', treatments=treatments)
+
+@app.route('/updatepengobatan')
+def updatepengobatan():
+    return render_template('updatepengobatan.html')
+
+@app.route('/addpengobatan')
+def addpengobatan():
+    return render_template('addpengobatan.html')
+
+@app.route('/pencegahan')
+def pencegahan():
+    cursor.execute("SELECT * FROM preventions")
+    preventions = cursor.fetchall()
+    db.commit()
+    print(preventions)
+
+    return render_template('pencegahanadm.html', preventions=preventions)
+
+@app.route('/updatepencegahan')
+def updatepencegahan():
+    return render_template('updatepencegahan.html')
+
+@app.route('/addpencegahan')
+def addpencegahan():
+    return render_template('addpencegahan.html')
 
 if __name__ == '__main__':
     app.run (debug = True)
