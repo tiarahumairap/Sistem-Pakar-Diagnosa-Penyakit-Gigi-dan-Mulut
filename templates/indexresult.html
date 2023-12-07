@@ -29,7 +29,7 @@
     <section id="diagnosis" class="diag">
         <div>
         </br></br>
-            <p>Hai, {{ name }}. This is your diagnosis result!</p>
+            <p>Hallo, {{ uname }}! This is your diagnosis result!</p>
             </br>
         </br></br></br>
         </div>
@@ -45,32 +45,44 @@
                     <p>S I M I L A R I T Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :<strong> {{ hasil }}</strong></p>
                 </div>
             </div>
+            <div class="center-box">
+                <div class="dashed1">
+                </br>
+                    <p>G E J A L A &nbsp;&nbsp; Y A N G &nbsp;&nbsp; A N D A &nbsp;&nbsp; P I L I H</p>
+                    </br>
+                    <ol>
+                        {% for gejala in symptoms%}
+                            <li>{{ gejala }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
             <div class="container2">
                 <div class="center-boxr">
                     <div class="dashed2">
                     </br>
                         <p>P E N G O B A T A N</p>
                     </br>
-                        <ol>
-                            <li>{{pengobatan 1}}</li>
-                            <li>{{pengobatan 2}}</li>
-                            <li>{{pengobatan 3}}</li>
-                            <li>{{pengobatan 4}}</li>
-                            <li>{{pengobatan 5}}</li>
-                        </ol>
+                        <!-- <ol>
+                            <li>{{pengobatan1}}</li>
+                            <li>{{pengobatan2}}</li>
+                            <li>{{pengobatan3}}</li>
+                            <li>{{pengobatan4}}</li>
+                            <li>{{pengobatan5}}</li>
+                        </ol> -->
                     </div>
                 </div>
                 <div class="center-boxl">
                     <div class="dashed3">
                         <P>P E N C E G A H A N</P>
                     </br>
-                        <ol>
-                            <li>{{pencegahan 1}}</li>
-                            <li>{{pencegahan 2}}</li>
-                            <li>{{pencegahan 3}}</li>
-                            <li>{{pencegahan 4}}</li>
-                            <li>{{pencegahan 5}}</li>
-                        </ol>
+                        <!-- <ol>
+                            <li>{{pencegahan1}}</li>
+                            <li>{{pencegahan2}}</li>
+                            <li>{{pencegahan3}}</li>
+                            <li>{{pencegahan4}}</li>
+                            <li>{{pencegahan5}}</li>
+                        </ol> -->
                     </div>
                 </div>
             </div>

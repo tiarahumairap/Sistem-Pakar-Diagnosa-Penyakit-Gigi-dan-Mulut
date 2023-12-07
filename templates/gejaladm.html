@@ -143,140 +143,22 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>1.</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td> 4</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>5</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>Internet
-                      Explorer 5.5
-                    </td>
-                    <td>Win 95+</td>
-                    <td>5.5</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>Internet
-                      Explorer 6
-                    </td>
-                    <td>Win 98+</td>
-                    <td>6</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5.</td>
-                    <td>Internet Explorer 7</td>
-                    <td>Win XP SP2+</td>
-                    <td>7</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>6.</td>
-                    <td>AOL browser (AOL desktop)</td>
-                    <td>Win XP</td>
-                    <td>6</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>7.</td>
-                    <td>Firefox 1.0</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>1.7</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>8.</td>
-                    <td>Firefox 1.5</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>1.8</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>9.</td>
-                    <td>Firefox 2.0</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>1.8</td>
-                    <td>
-                      <a href="/updategejala" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
+                    {% for symptom in symptoms %}
+                      <tr>
+                          <td>{{ loop.index }}</td>
+                          <td>{{ symptom.kode_gejala }}</td>
+                          <td>{{ symptom.gejala }}</td>
+                          <td>{{ symptom.bobot }}</td>
+                          <td>
+                              <a href="/updategejala/{{ symptom.kode }}" class="custom-button">
+                                  <i class="fas fa-pen"></i>
+                              </a>&nbsp;&nbsp;&nbsp;
+                              <a href="#" class="alertbutton custom-button">
+                                  <i class="fas fa-trash"></i>
+                              </a>
+                          </td>
+                      </tr>
+                    {% endfor %}
                   </tbody>
                   <tfoot>
                   <tr>

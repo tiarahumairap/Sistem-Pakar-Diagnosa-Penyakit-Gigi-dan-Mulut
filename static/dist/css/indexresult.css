@@ -128,8 +128,8 @@
 .center-box{
     margin-left: 2cm;
     margin-right: 2cm;
-    width: 34cm;
-    height: 5.5cm;
+    width: auto;
+    height: auto;
     padding: 20px;
     background-color: #fff;
     color: #000000;
@@ -145,6 +145,20 @@
     border-radius: 20px;
     margin-right: 0.5cm;
     font-weight: 900;
+}
+.center-box ol{
+    margin-left: 0.5cm;
+    color: white;
+    background-color: #472f5bbb;
+    padding: 12px;
+    border-radius: 20px;
+    margin-right: 0.5cm;
+    font-weight: 900;
+    padding-left: 1cm;
+}
+.center-box li{
+    margin-top: 10px;
+    margin-bottom: 12px;
 }
 .dashed1{
     border: 1.5px dashed #caded9;
