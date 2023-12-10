@@ -41,7 +41,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Halo, {{login_name}}</p>
+          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Welcome to Admin Panel</p>
         </div>
       </div>
 
@@ -166,7 +166,7 @@
                           <td>{{ symptom.gejala }}</td>
                           <td>{{ symptom.bobot }}</td>
                           <td>
-                              <a href="/updategejala" class="custom-button">
+                              <a href="{{ url_for('updategejala', kode_gejala=symptom.kode_gejala) }}" class="custom-button">
                                   <i class="fas fa-pen"></i>
                               </a>&nbsp;&nbsp;&nbsp;
                               <a href="#" class="alertbutton custom-button">

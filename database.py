@@ -205,3 +205,75 @@ def check_admin_credentials(email, password):
         return True
     else:
         return False
+
+def get_prevention_by_code(kode_pencegahan):
+    cursor = get_database_cursor()
+    query = "SELECT * FROM preventions WHERE kode_pencegahan = %s"
+    cursor.execute(query, (kode_pencegahan,))
+    prevention = cursor.fetchone()
+    cursor.close()
+    return prevention
+
+def update_prevention(kode_pencegahan, new_data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("UPDATE preventions SET pencegahan = %s WHERE kode_pencegahan = %s",
+                       (new_data['pencegahan'], kode_pencegahan))
+        db.commit()
+        return True
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+
+    finally:
+        cursor.close()
+
+def get_treatment_by_code(kode_pengobatan):
+    cursor = get_database_cursor()
+    query = "SELECT * FROM treatments WHERE kode_pengobatan = %s"
+    cursor.execute(query, (kode_pengobatan,))
+    treatment = cursor.fetchone()
+    cursor.close()
+    return treatment
+
+def update_treatment(kode_pengobatan, new_data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("UPDATE treatments SET pengobatan = %s WHERE kode_pengobatan = %s",
+                       (new_data['pengobatan'], kode_pengobatan))
+        db.commit()
+        return True
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+
+    finally:
+        cursor.close()
+
+def get_symptom_by_code(kode_gejala):
+    cursor = get_database_cursor()
+    query = "SELECT * FROM symptoms WHERE kode_gejala = %s"
+    cursor.execute(query, (kode_gejala,))
+    symptom = cursor.fetchone()
+    cursor.close()
+    return symptom
+
+def update_symptom(kode_gejala, new_data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("UPDATE symptoms SET gejala = %s, bobot = %s WHERE kode_gejala = %s" ,
+                       (new_data['gejala'], new_data['bobot'], kode_gejala))
+        db.commit()
+        return True
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+
+    finally:
+        cursor.close()

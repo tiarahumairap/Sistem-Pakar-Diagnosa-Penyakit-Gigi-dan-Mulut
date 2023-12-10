@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials
+from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom
 
 app = Flask(__name__)
 app.secret_key = 'ara20102196ara'
@@ -159,9 +159,22 @@ def gejala():
 def addgejala():
     return render_template('addgejala.html')
 
-@app.route('/updategejala')
-def updategejala():
-    return render_template('updategejala.html')
+@app.route('/updategejala/<kode_gejala>', methods = ['GET', 'POST'])
+def updategejala(kode_gejala):
+    if request.method == 'POST':
+        new_data = {
+            'gejala': request.form.get('gejala'),
+            'bobot': request.form.get('bobot')
+        }
+
+        if update_symptom(kode_gejala, new_data):
+            return redirect(url_for('gejala'))
+        else:
+            return render_template('updategejala.html', error="Gagal memperbarui gejala")
+
+    else:
+        symptom = get_symptom_by_code(kode_gejala)
+        return render_template('updategejala.html', symptom=symptom)
 
 @app.route('/penyakit')
 def penyakit():
@@ -204,9 +217,21 @@ def pengobatan():
 
     return render_template('pengobatanadm.html', treatments=treatments)
 
-@app.route('/updatepengobatan')
-def updatepengobatan():
-    return render_template('updatepengobatan.html')
+@app.route('/updatepengobatan/<kode_pengobatan>', methods=['GET', 'POST'])
+def updatepengobatan(kode_pengobatan):
+    if request.method == 'POST':
+        new_data = {
+            'pengobatan': request.form.get('pengobatan')
+        }
+
+        if update_treatment(kode_pengobatan, new_data):
+            return redirect(url_for('pengobatan'))
+        else:
+            return render_template('updatepengobatan.html', error="Gagal memperbarui pengobatan")
+
+    else:
+        treatment = get_treatment_by_code(kode_pengobatan)
+        return render_template('updatepengobatan.html', treatment=treatment)
 
 @app.route('/addpengobatan')
 def addpengobatan():
@@ -221,9 +246,21 @@ def pencegahan():
 
     return render_template('pencegahanadm.html', preventions=preventions)
 
-@app.route('/updatepencegahan')
-def updatepencegahan():
-    return render_template('updatepencegahan.html')
+@app.route('/updatepencegahan/<kode_pencegahan>', methods=['GET', 'POST'])
+def updatepencegahan(kode_pencegahan):
+    if request.method == 'POST':
+        new_data = {
+            'pencegahan': request.form.get('pencegahan')
+        }
+
+        if update_prevention(kode_pencegahan, new_data):
+            return redirect(url_for('pencegahan'))
+        else:
+            return render_template('updatepencegahan.html', error="Gagal memperbarui pencegahan")
+
+    else:
+        prevention = get_prevention_by_code(kode_pencegahan)
+        return render_template('updatepencegahan.html', prevention=prevention)
 
 @app.route('/addpencegahan')
 def addpencegahan():

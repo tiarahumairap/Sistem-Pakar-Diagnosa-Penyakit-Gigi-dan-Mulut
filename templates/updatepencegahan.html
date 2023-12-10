@@ -37,7 +37,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Halo, {{login_name}}</p>
+          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Welcome to Admin Panel</p>
         </div>
       </div>
 
@@ -144,15 +144,15 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form id="quickForm">
+              <form action="/updatepencegahan/{{ prevention.kode_pencegahan }}" method="post" id="quickForm">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputID">ID</label>
-                    <input type="text" name="id" class="form-control" id="exampleInputID" placeholder="ID">
+                    <input type="text" name="id" class="form-control" id="exampleInputID" placeholder="ID" value="{{ prevention.kode_pencegahan }}" readonly>
                   </div>
                   <div class="form-group">
                     <label for="exampleInputText">Pencegahan</label>
-                    <input type="text" name="pencegahan" class="form-control" id="exampleInputText" placeholder="Pencegahan">
+                    <input type="text" name="pencegahan" class="form-control" id="exampleInputText" placeholder="Pencegahan" value="{{ prevention.pencegahan }}">
                   </div>
                 <!-- /.card-body -->
                 <div class="card-footer">

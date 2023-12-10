@@ -37,6 +37,13 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Welcome to Admin Panel</p>
+        </div>
+      </div>
+
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -285,7 +292,7 @@
 
 <script>
   document.getElementById("logoutLink").addEventListener("click", function(event) {
-    event.preventDefault();  // Menghentikan navigasi langsung ke "/"
+    event.preventDefault();
 
     var confirmLogout = confirm("Yakin ingin logout?");
     if (confirmLogout) {

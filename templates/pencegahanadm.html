@@ -41,7 +41,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Halo, {{login_name}}</p>
+          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Welcome to Admin Panel</p>
         </div>
       </div>
 
@@ -164,7 +164,7 @@
                           <td>{{ prevention.kode_pencegahan }}</td>
                           <td>{{ prevention.pencegahan }}</td>
                           <td>
-                              <a href="/updatepencegahan" class="custom-button">
+                              <a href="{{ url_for('updatepencegahan', kode_pencegahan=prevention.kode_pencegahan) }}" class="custom-button">
                                   <i class="fas fa-pen"></i>
                               </a>&nbsp;&nbsp;&nbsp;
                               <a href="#" class="alertbutton custom-button">
