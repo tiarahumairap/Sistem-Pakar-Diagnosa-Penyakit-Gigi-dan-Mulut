@@ -169,7 +169,7 @@
                               <a href="{{ url_for('updategejala', kode_gejala=symptom.kode_gejala) }}" class="custom-button">
                                   <i class="fas fa-pen"></i>
                               </a>&nbsp;&nbsp;&nbsp;
-                              <a href="#" class="alertbutton custom-button">
+                              <a href="#" class="alertbuttongejala custom-button" data-kodegejala="{{ symptom.kode_gejala }}">
                                   <i class="fas fa-trash"></i>
                               </a>
                           </td>
@@ -236,7 +236,39 @@
 <script src="../static/dist/js/click.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
+
 <!-- Page specific script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var alertButtons = document.querySelectorAll('.alertbuttongejala');
+    alertButtons.forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        var confirmDelete = confirm('Hi! Are you sure you want to remove this symptom option?');
+        if (confirmDelete) {
+          var kodeGejala = button.getAttribute('data-kodegejala');
+          fetch('/deletegejala/' + kodeGejala, {
+            method: 'DELETE',
+          })
+          .then(function (response) {
+            if (response.ok) {
+              var row = button.closest('tr');
+              row.remove();
+              alert('The symptom option you selected has been successfully deleted!');
+            } else {
+              alert('The symptom option you selected was not successfully deleted!');
+            }
+          })
+          .catch(function (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan');
+          });
+        }
+      });
+    });
+  });
+</script>
+
 <script>
   $(function () {
     $("#example1").DataTable({

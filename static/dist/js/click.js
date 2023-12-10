@@ -8,3 +8,4 @@ document.querySelectorAll('.alertbutton').forEach(function(button) {
        }
     }
 });
+

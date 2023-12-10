@@ -306,5 +306,83 @@ def addpencegahan():
     else:
         return render_template('addpencegahan.html', kode_pencegahan=kode_pencegahan_value)
 
+from flask import request, jsonify
+
+@app.route('/deletegejala/<kode_gejala>', methods=['DELETE'])
+def deletegejala(kode_gejala):
+    try:
+        cursor = get_database_cursor()
+
+        # Cek apakah gejala dengan kode_gejala tertentu ada di database
+        cursor.execute("SELECT * FROM symptoms WHERE kode_gejala = %s", (kode_gejala,))
+        gejala = cursor.fetchone()
+
+        if gejala:
+            # Hapus gejala dari database
+            cursor.execute("DELETE FROM symptoms WHERE kode_gejala = %s", (kode_gejala,))
+            db.commit()
+            return 'Gejala berhasil dihapus', 200
+        else:
+            return 'Gejala tidak ditemukan', 404
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return 'Terjadi kesalahan', 500
+
+    finally:
+        cursor.close()
+
+@app.route('/deletepencegahan/<kode_pencegahan>', methods=['DELETE'])
+def deletepencegahan(kode_pencegahan):
+    try:
+        cursor = get_database_cursor()
+
+        # Cek apakah pencegahan dengan kode_pencegahan tertentu ada di database
+        cursor.execute("SELECT * FROM preventions WHERE kode_pencegahan = %s", (kode_pencegahan,))
+        pencegahan = cursor.fetchone()
+
+        if pencegahan:
+            # Hapus pencegahan dari database
+            cursor.execute("DELETE FROM preventions WHERE kode_pencegahan = %s", (kode_pencegahan,))
+            db.commit()
+            return 'Pencegahan berhasil dihapus', 200
+        else:
+            return 'Pencegahan tidak ditemukan', 404
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return 'Terjadi kesalahan', 500
+
+    finally:
+        cursor.close()
+
+@app.route('/deletepengobatan/<kode_pengobatan>', methods=['DELETE'])
+def deletepengobatan(kode_pengobatan):
+    try:
+        cursor = get_database_cursor()
+
+        # Cek apakah pengobatan dengan kode_pengobatan tertentu ada di database
+        cursor.execute("SELECT * FROM treatments WHERE kode_pengobatan = %s", (kode_pengobatan,))
+        pengobatan = cursor.fetchone()
+
+        if pengobatan:
+            # Hapus pengobatan dari database
+            cursor.execute("DELETE FROM treatments WHERE kode_pengobatan = %s", (kode_pengobatan,))
+            db.commit()
+            return 'Pengobatan berhasil dihapus', 200
+        else:
+            return 'Pengobatan tidak ditemukan', 404
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return 'Terjadi kesalahan', 500
+
+    finally:
+        cursor.close()
+
+
 if __name__ == '__main__':
     app.run (debug = True)
