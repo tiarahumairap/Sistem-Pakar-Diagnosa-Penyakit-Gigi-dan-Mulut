@@ -55,14 +55,16 @@ def kode_gejala():
     result = cursor.fetchone()
 
     if result and result['kode_gejala']:
-        last_idg = result['kode_gejala']
-        next_idg = f'G{int(last_idg[1:]) + 1:02d}'
+        last_ipg = result['kode_gejala']
+        prefix = last_ipg[:-2]  # Mengambil semua karakter kecuali dua karakter terakhir
+        numeric_part = int(last_ipg[-2:]) + 1  # Menambahkan satu ke dua karakter terakhir dan mengonversinya ke integer
+        next_ipg = f'{prefix}{numeric_part:02d}'
     else:
-        next_idg = 'G01'
+        next_ipg = 'G01'
 
     cursor.close()
 
-    return next_idg
+    return next_ipg
 
 def kode_pengobatan():
     cursor = get_database_cursor()
@@ -71,14 +73,16 @@ def kode_pengobatan():
     result = cursor.fetchone()
 
     if result and result['kode_pengobatan']:
-        last_ipn = result['kode_pengobatan']
-        next_ipn = f'PN{int(last_ipn[1:]) + 1:02d}'
+        last_ipg = result['kode_pengobatan']
+        prefix = last_ipg[:-2]  # Mengambil semua karakter kecuali dua karakter terakhir
+        numeric_part = int(last_ipg[-2:]) + 1  # Menambahkan satu ke dua karakter terakhir dan mengonversinya ke integer
+        next_ipg = f'{prefix}{numeric_part:02d}'
     else:
-        next_ipn = 'PN01'
+        next_ipg = 'PN01'
 
     cursor.close()
 
-    return next_ipn
+    return next_ipg
 
 def kode_pencegahan():
     cursor = get_database_cursor()
@@ -88,7 +92,9 @@ def kode_pencegahan():
 
     if result and result['kode_pencegahan']:
         last_ipg = result['kode_pencegahan']
-        next_ipg = f'PG{int(last_ipg[1:]) + 1:02d}'
+        prefix = last_ipg[:-2]  # Mengambil semua karakter kecuali dua karakter terakhir
+        numeric_part = int(last_ipg[-2:]) + 1  # Menambahkan satu ke dua karakter terakhir dan mengonversinya ke integer
+        next_ipg = f'{prefix}{numeric_part:02d}'
     else:
         next_ipg = 'PG01'
 
@@ -96,12 +102,12 @@ def kode_pencegahan():
 
     return next_ipg
 
+
 def insert_symptoms():
     try:
         cursor = get_database_cursor()
 
         for symptom in data_symptoms:
-            # Check if the kode_pencegahan already exists
             cursor.execute("SELECT COUNT(*) as count FROM symptoms WHERE kode_gejala = %s", (symptom['kode_gejala'],))
             result = cursor.fetchone()
 
@@ -277,3 +283,48 @@ def update_symptom(kode_gejala, new_data):
 
     finally:
         cursor.close()
+
+def add_prevention(data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("INSERT INTO preventions (kode_pencegahan, pencegahan) VALUES (%s, %s)",
+                       (data['kode_pencegahan'], data['pencegahan']))
+        db.commit()
+        return True
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+
+def add_treatment(data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("INSERT INTO treatments (kode_pengobatan, pengobatan) VALUES (%s, %s)",
+                       (data['kode_pengobatan'], data['pengobatan']))
+        db.commit()
+        return True
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+
+def add_symptom(data):
+    try:
+        cursor = get_database_cursor()
+        cursor.execute("INSERT INTO symptoms (kode_gejala, gejala, bobot) VALUES (%s, %s, %s)",
+                       (data['kode_gejala'], data['gejala'], data['bobot']))
+        db.commit()
+        return True
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom
+from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom, add_prevention, kode_pencegahan, kode_pengobatan, add_treatment, add_symptom, kode_gejala
 
 app = Flask(__name__)
 app.secret_key = 'ara20102196ara'
@@ -155,9 +155,23 @@ def gejala():
 
     return render_template('gejaladm.html', symptoms=symptoms)
 
-@app.route('/addgejala')
+@app.route('/addgejala', methods=['GET', 'POST'])
 def addgejala():
-    return render_template('addgejala.html')
+    kode_gejala_value = kode_gejala()
+    if request.method == 'POST':
+        new_data = {
+            'kode_gejala': kode_gejala_value,
+            'gejala': request.form.get('gejala'),
+            'bobot': request.form.get('bobot')
+        }
+
+        if add_symptom(new_data):
+            return redirect(url_for('gejala'))
+        else:
+            return render_template('addgejala.html', error="Gagal menambahkan gejala")
+
+    else:
+        return render_template('addgejala.html', kode_gejala=kode_gejala_value)
 
 @app.route('/updategejala/<kode_gejala>', methods = ['GET', 'POST'])
 def updategejala(kode_gejala):
@@ -233,9 +247,22 @@ def updatepengobatan(kode_pengobatan):
         treatment = get_treatment_by_code(kode_pengobatan)
         return render_template('updatepengobatan.html', treatment=treatment)
 
-@app.route('/addpengobatan')
+@app.route('/addpengobatan', methods=['GET', 'POST'])
 def addpengobatan():
-    return render_template('addpengobatan.html')
+    kode_pengobatan_value = kode_pengobatan()
+    if request.method == 'POST':
+        new_data = {
+            'kode_pengobatan': kode_pengobatan_value,
+            'pengobatan': request.form.get('pengobatan')
+        }
+
+        if add_treatment(new_data):
+            return redirect(url_for('pengobatan'))
+        else:
+            return render_template('addpengobatan.html', error="Gagal menambahkan pengobatan")
+    else:
+        # Metode GET, melewati nilai kode_pengobatan ke template
+        return render_template('addpengobatan.html', kode_pengobatan=kode_pengobatan_value)
 
 @app.route('/pencegahan')
 def pencegahan():
@@ -262,9 +289,22 @@ def updatepencegahan(kode_pencegahan):
         prevention = get_prevention_by_code(kode_pencegahan)
         return render_template('updatepencegahan.html', prevention=prevention)
 
-@app.route('/addpencegahan')
+@app.route('/addpencegahan', methods=['GET', 'POST'])
 def addpencegahan():
-    return render_template('addpencegahan.html')
+    kode_pencegahan_value = kode_pencegahan()
+    if request.method == 'POST':
+        new_data = {
+            'kode_pencegahan': kode_pencegahan_value,
+            'pencegahan': request.form.get('pencegahan')
+        }
+
+        if add_prevention(new_data):
+            return redirect(url_for('pencegahan'))
+        else:
+            return render_template('addpencegahan.html', error="Gagal menambahkan pencegahan")
+
+    else:
+        return render_template('addpencegahan.html', kode_pencegahan=kode_pencegahan_value)
 
 if __name__ == '__main__':
     app.run (debug = True)
