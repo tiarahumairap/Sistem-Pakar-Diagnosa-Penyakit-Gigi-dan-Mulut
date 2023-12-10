@@ -104,3 +104,8 @@ data_symptoms = [
     {"kode_gejala": "G39", "gejala": "Rasa nyeri pada area luka sariawan", "bobot": 5},
     {"kode_gejala": "G40", "gejala": "Berlangsung selama 7-14 hari dan dapat muncul kembali di lain waktu (rekuren)", "bobot": 3},
 ]
+
+data_admins = [
+    {"email": "20102196@ittelkom-pwt.ac.id", "password": "20102196"},
+    {"email": "tiaraputri2172@gmail.com", "password": "Humairaputri21"}
+]

@@ -37,13 +37,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="info">
-          <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Halo, {{login_name}}</p>
-        </div>
-      </div>
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -101,7 +94,7 @@
           </li>
           <li class="nav-header">LOGOUT</li>
           <li class="nav-item">
-            <a href="/" class="nav-link">
+            <a href="/" class="nav-link" id="logoutLink">
               <i class="nav-icon fas fa-power-off"></i>
               <p>
                 Logout
@@ -138,22 +131,10 @@
       <div class="container-fluid">
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-database"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Basis Pengetahuan</span>
-                <span class="info-box-number">{{total_basis}}</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-book"></i></span>
+              <span class="info-box-icon bg-white elevation-1"><i class="fas fa-book"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Gejala</span>
@@ -170,7 +151,7 @@
 
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-disease"></i></span>
+              <span class="info-box-icon bg-white elevation-1"><i class="fas fa-disease"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Penyakit</span>
@@ -183,11 +164,23 @@
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-globe"></i></span>
+              <span class="info-box-icon bg-white elevation-1"><i class="fas fa-stethoscope"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Total</span>
-                <span class="info-box-number">{{total_data}}</span>
+                <span class="info-box-text">Pengobatan</span>
+                <span class="info-box-number">{{total_pengobatan}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-white elevation-1"><i class="fas fa-medkit"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Pencegahan</span>
+                <span class="info-box-number">{{total_pencegahan}}</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -290,6 +283,16 @@
 </div>
 <!-- ./wrapper -->
 
+<script>
+  document.getElementById("logoutLink").addEventListener("click", function(event) {
+    event.preventDefault();  // Menghentikan navigasi langsung ke "/"
+
+    var confirmLogout = confirm("Yakin ingin logout?");
+    if (confirmLogout) {
+      window.location.href = "/logout";  // Redirect ke endpoint logout
+    }
+  });
+</script>
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>

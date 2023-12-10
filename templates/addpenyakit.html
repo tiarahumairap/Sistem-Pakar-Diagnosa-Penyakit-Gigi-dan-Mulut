@@ -132,79 +132,89 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- left column -->
-          <div class="col-md-12">
-            <!-- jquery validation -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Tambahkan Penyakit</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              <form id="quickForm">
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="exampleInputID">ID</label>
-                    <input type="text" name="id_penyakit" class="form-control" id="exampleInputID" placeholder="ID">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputText">Penyakit</label>
-                    <input type="text" name="penyakit" class="form-control" id="exampleInputText" placeholder="Penyakit">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputText">Definisi Penyakit</label>
-                    <textarea type="text" name="definisi" class="form-control" placeholder="Definisi..."></textarea>
-                  </div>
-                  <div class="form-group1">
+    <form action="/addpenyakit" method="post">
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+              <!-- jquery validation -->
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Tambahkan Penyakit</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form id="quickForm">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="exampleInputID">ID</label>
+                      <input type="text" name="id_penyakit" class="form-control" id="exampleInputID" placeholder="ID">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputText">Penyakit</label>
+                      <input type="text" name="penyakit" class="form-control" id="exampleInputText" placeholder="Penyakit">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputText">Definisi Penyakit</label>
+                      <textarea type="text" name="definisi" class="form-control" placeholder="Definisi..."></textarea>
+                    </div>
+                    <div class="form-group1">
+                      <div class="column">
+                          <label for="exampleInputText">Pengobatan</label>
+                          <select name="pengobatan" class="form-control" id="pengobatan">
+                            {% for treatment in treatments %}
+                                <option value="{{ treatment.kode_pengobatan }}">{{ treatment.kode_pengobatan }} - {{ treatment.pengobatan }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                    </br>
+                    </div>
+                  </br>
+                  <button type="button" class="btn btn-primary" id="add-treatment"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pengobatan</button>
+                  </br>
+                  </br>
+                  <div class="form-group2">
                     <div class="column">
-                        <label for="exampleInputText">Pengobatan</label>
-                        <input type="text" name="pengobatan" class="form-control" id="exampleInputID" placeholder="Rekomendasi Pengobatan">
+                        <label for="exampleInputText">Pencegahan</label>
+                        <select name="pencegahan" class="form-control" id="pencegahan">
+                          {% for prevention in preventions %}
+                              <option value="{{ prevention.kode_pencegahan }}">{{ prevention.kode_pencegahan }} - {{ prevention.pencegahan }}</option>
+                          {% endfor %}
+                      </select>
                     </div>
                   </br>
                   </div>
                 </br>
-                <button type="button" class="btn btn-primary" id="add-treatment"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pengobatan</button>
+                <button type="button" class="btn btn-primary" id="add-treatment2"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pencegahan</button>
                 </br>
                 </br>
-                <div class="form-group2">
-                  <div class="column">
-                      <label for="exampleInputText">Pencegahan</label>
-                      <input type="text" name="pencegahan" class="form-control" id="exampleInputID" placeholder="Saran Pencegahan">
-                  </div>
-                </br>
-                </div>
-              </br>
-              <button type="button" class="btn btn-primary" id="add-treatment2"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pencegahan</button>
-              </br>
-              </br>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                  <div class="button-container">
-                    <div class="lefty">
-                      <a href="/penyakit" class="btn btn-primary1">Cancel</a>
-                    </div>
-                    <div class="right">
-                      <button type="submit" class="btn btn-primary1">Add</button>
+                  <!-- /.card-body -->
+                  <div class="card-footer">
+                    <div class="button-container">
+                      <div class="lefty">
+                        <a href="/penyakit" class="btn btn-primary1">Cancel</a>
+                      </div>
+                      <div class="right">
+                        <button type="submit" class="btn btn-primary1">Add</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <!-- /.card -->
-            </div>
-          <!--/.col (left) -->
-          <!-- right column -->
-          <div class="col-md-6">
+                </form>
+              </div>
+              <!-- /.card -->
+              </div>
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-6">
 
+            </div>
+            <!--/.col (right) -->
           </div>
-          <!--/.col (right) -->
-        </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
+          <!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </section>
+    </form>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
@@ -240,7 +250,11 @@
                                             '<div class="column">' +
                                               '</br>' +
                                                 '<label for="exampleInputText">Pengobatan</label>' +
-                                                '<input type="number" name="pengobatan" class="form-control" id="pengobatan" placeholder="Rekomendasi Pengobatan">' +
+                                                '<select name="pengobatan" class="form-control" id="pengobatan">' +
+                                                  '{% for treatment in treatments %}' +
+                                                      '<option value="{{ treatment.kode_pengobatan }}">{{ treatment.kode_pengobatan }} - {{ treatment.pengobatan }}</option>' +
+                                                  '{% endfor %}' +
+                                              '</select>' +
                                             '</div>' +
                                         '</div>');
       if($(".form-group1").length == 5) {
@@ -256,7 +270,11 @@
                                             '<div class="column">' +
                                               '</br>' +
                                                 '<label for="exampleInputText">Pencegahan</label>' +
-                                                '<input type="text" name="pencegahan" class="form-control" id="pencegahan" placeholder="Saran Pencegahan">' +
+                                                '<select name="pencegahan" class="form-control" id="pencegahan">' +
+                                                  '{% for prevention in preventions %}' +
+                                                      '<option value="{{ prevention.kode_pencegahan }}">{{ prevention.kode_pencegahan }} - {{ prevention.pencegahan }}</option>' +
+                                                  '{% endfor %}' +
+                                              '</select>' +
                                             '</div>' +
                                         '</div>');
   

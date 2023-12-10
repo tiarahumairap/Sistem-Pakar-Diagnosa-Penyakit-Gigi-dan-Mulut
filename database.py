@@ -1,6 +1,5 @@
 import mysql.connector
-from insert import data_treatments, data_preventions, data_symptoms
-
+from insert import data_treatments, data_preventions, data_symptoms, data_admins
 # Inisialisasi db sebagai objek global
 db = None
 
@@ -28,6 +27,8 @@ def create_database():
     cursor.execute("CREATE TABLE IF NOT EXISTS treatments (kode_pengobatan VARCHAR(5) PRIMARY KEY, pengobatan VARCHAR(255) NOT NULL)")
 
     cursor.execute("CREATE TABLE IF NOT EXISTS preventions (kode_pencegahan VARCHAR(5) PRIMARY KEY, pencegahan VARCHAR(255) NOT NULL)")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS admins (email VARCHAR(255) PRIMARY KEY, password VARCHAR(255) NOT NULL)")
 
     cursor.close()
 
@@ -170,3 +171,37 @@ def insert_treatments():
     finally:
         cursor.close()
 
+def insert_admins():
+    try:
+        cursor = get_database_cursor()
+
+        for admin in data_admins:
+            cursor.execute("SELECT COUNT(*) as count FROM admins WHERE email = %s", (admin['email'],))
+            result = cursor.fetchone()
+
+            if result and result['count'] == 0:
+                cursor.execute(
+                    "INSERT INTO admins (email, password) VALUES (%s, %s)",
+                    (admin['email'], admin['password'])
+                )
+
+        db.commit()
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+
+    finally:
+        cursor.close()
+
+
+def check_admin_credentials(email, password):
+    cursor = get_database_cursor()
+    query = "SELECT * FROM admins WHERE email = %s AND password = %s"
+    cursor.execute(query, (email, password))
+    result = cursor.fetchone()
+
+    if result:
+        return True
+    else:
+        return False

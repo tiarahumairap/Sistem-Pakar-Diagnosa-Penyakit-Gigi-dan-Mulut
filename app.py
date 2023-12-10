@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms
+from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials
 
 app = Flask(__name__)
 app.secret_key = 'ara20102196ara'
@@ -10,6 +10,7 @@ cursor = get_database_cursor()
 insert_treatments()
 insert_preventions()
 insert_symptoms()
+insert_admins()
 
 @app.route('/addu', methods=['POST'])
 def addu():
@@ -102,9 +103,28 @@ def result():
 def home():
     return render_template('indexweb.html')
 
+@app.route("/loginadm", methods=['GET', 'POST'])
+def loginadm():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if check_admin_credentials(email, password):
+            return redirect(url_for('indexadm'))
+        else:
+            return render_template('loginweb.html', error="Email atau password salah")
+
+    else:
+        return render_template('loginweb.html')
+
 @app.route("/login")
 def login():
     return render_template('loginweb.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
 
 @app.route("/indiag")
 def indiag():
@@ -116,15 +136,15 @@ def indexadm():
     result = cursor.fetchone()
     total_gejala = result['total_gejala']
 
-    cursor.execute("SELECT COUNT(*) as total_penyakit FROM symptoms")
+    cursor.execute("SELECT COUNT(*) as total_pengobatan FROM treatments")
     result = cursor.fetchone()
-    total_penyakit = result['total_penyakit']
+    total_pengobatan = result['total_pengobatan']
 
-    cursor.execute("SELECT COUNT(*) as total_basis FROM symptoms")
+    cursor.execute("SELECT COUNT(*) as total_pencegahan FROM preventions")
     result = cursor.fetchone()
-    total_basis = result['total_basis']
+    total_pencegahan = result['total_pencegahan']
 
-    return render_template('indexadm.html', total_gejala=total_gejala, total_penyakit=total_penyakit, total_basis=total_basis)
+    return render_template('indexadm.html', total_gejala=total_gejala, total_pengobatan=total_pengobatan, total_pencegahan=total_pencegahan)
 
 @app.route('/gejala') #index
 def gejala():
@@ -149,7 +169,12 @@ def penyakit():
 
 @app.route('/addpenyakit')
 def addpenyakit():
-    return render_template('addpenyakit.html')
+    cursor.execute("SELECT * FROM treatments")
+    treatments = cursor.fetchall()
+    cursor.execute("SELECT * FROM preventions")
+    preventions = cursor.fetchall()
+    db.commit()
+    return render_template('addpenyakit.html', treatments=treatments, preventions=preventions)
 
 @app.route('/updatepenyakit')
 def updatepenyakit():
@@ -161,7 +186,10 @@ def basis():
 
 @app.route('/addbasis')
 def addbasis():
-    return render_template('addbasis.html')
+    cursor.execute("SELECT * FROM symptoms")
+    symptoms = cursor.fetchall()
+    db.commit()
+    return render_template('addbasis.html', symptoms=symptoms)
 
 @app.route('/detailbasis')
 def detailbasis():

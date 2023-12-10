@@ -5,24 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XpertDO | Admin</title>
     <link rel="stylesheet" href="../static/dist/css/loginweb.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="align">
   <div class="login-box">
-    <h2>Login Admin</h2>
-    <form>
+    <h2>LOGIN ADMIN</h2>
+    <form action="/loginadm" method="post">
+      {% if error %} <!-- Menampilkan pesan error jika ada -->
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ error }}
+        </div>
+      {% endif %}
+      </br></br></br>
       <div class="user-box">
         <input type="email" name="email" id="email" required="">
         <label>Email</label>
       </div>
       <div class="user-box">
-        <input type="password" name="" required="">
+        <input type="password" name="password" id="password" required="">
         <label>Password</label>
       </div>
-      <a class="ab" href="/indexadm">
+      <button type="submit" class="ab">
         <span class="span"></span>
         <span class="span"></span>
-        &nbsp;Login&nbsp;
-      </a>
+        Login
+      </button>
       <p class="cancel">Back to home? <a class="home" href="/"> Click this!</a></p>
     </form>
   </div>

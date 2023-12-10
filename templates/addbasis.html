@@ -156,7 +156,11 @@
                   </div>
                   <div class="form-group3">
                     <label for="exampleInputText">Gejala</label>
-                    <input type="text" name="gejala" class="form-control" id="exampleInputText" placeholder="Gejala">
+                    <select name="pengobatan" class="form-control" id="pengobatan">
+                      {% for symptom in symptoms %}
+                          <option value="{{ symptom.kode_gejala }}">{{ symptom.kode_gejala }} - {{ symptom.gejala }}</option>
+                      {% endfor %}
+                  </select>
                   </div>
                 </br>
               <button type="button" class="btn btn-primary" id="add-treatment"><i class="fas fa-plus"></i>&nbsp;&nbsp;Gejala</button>
@@ -222,8 +226,13 @@
       $("#add-treatment").click(function(){
         counter += 1;
         $(".form-group3").last().after('<div class="form-group3">' +
+          '</br>' +
           '<label for="exampleInputText">Gejala</label>' +
-          '<input type="text" name="gejala" class="form-control" id="exampleInputID" placeholder="Gejala">' +
+          '<select name="gejala" class="form-control" id="gejala">' +
+              '{% for symptom in symptoms %}' +
+                  '<option value="{{ symptom.kode_gejala }}">{{ symptom.kode_gejala }} - {{ symptom.gejala }}</option>' +
+              '{% endfor %}' +
+          '</select>' +
           '</div>');
         console.log("Jumlah inputan saat ini: " + counter);
         if(counter == 5) {
