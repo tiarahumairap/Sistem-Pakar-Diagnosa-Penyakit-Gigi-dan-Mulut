@@ -30,6 +30,8 @@ def create_database():
 
     cursor.execute("CREATE TABLE IF NOT EXISTS admins (email VARCHAR(255) PRIMARY KEY, password VARCHAR(255) NOT NULL)")
 
+    cursor.execute("""CREATE TABLE IF NOT EXISTS diseases (kode_penyakit VARCHAR(5) PRIMARY KEY, penyakit VARCHAR(255) NOT NULL, definisi TEXT, pengobatan1 VARCHAR(255), pengobatan2 VARCHAR(255), pengobatan3 VARCHAR(255), pengobatan4 VARCHAR(255), pengobatan5 VARCHAR(255), pencegahan1 VARCHAR(255), pencegahan2 VARCHAR(255), pencegahan3 VARCHAR(255), pencegahan4 VARCHAR(255), pencegahan5 VARCHAR(255), FOREIGN KEY (pengobatan1) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan2) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan3) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan4) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan5) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pencegahan1) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan2) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan3) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan4) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan5) REFERENCES preventions (kode_pencegahan))""")
+
     cursor.close()
 
 def id_user():
@@ -102,6 +104,23 @@ def kode_pencegahan():
 
     return next_ipg
 
+def kode_penyakit():
+    cursor = get_database_cursor()
+
+    cursor.execute("SELECT kode_penyakit FROM diseases ORDER BY kode_penyakit DESC LIMIT 1")
+    result = cursor.fetchone()
+
+    if result and result['kode_penyakit']:
+        last_ipp = result['kode_penyakit']
+        prefix = last_ipp[:-2]  # Mengambil semua karakter kecuali dua karakter terakhir
+        numeric_part = int(last_ipp[-2:]) + 1  # Menambahkan satu ke dua karakter terakhir dan mengonversinya ke integer
+        next_ipp = f'{prefix}{numeric_part:02d}'
+    else:
+        next_ipp = 'P01'
+
+    cursor.close()
+
+    return next_ipp
 
 def insert_symptoms():
     try:
@@ -152,6 +171,7 @@ def insert_preventions():
     finally:
         cursor.close()
 
+
 def insert_treatments():
     try:
         cursor = get_database_cursor()
@@ -176,6 +196,7 @@ def insert_treatments():
 
     finally:
         cursor.close()
+
 
 def insert_admins():
     try:
@@ -328,3 +349,66 @@ def add_symptom(data):
     finally:
         if cursor:
             cursor.close()
+
+def save_to_diseases_table(id_penyakit, nama_penyakit, definisi, pengobatan1, pengobatan2, pengobatan3, pengobatan4, pengobatan5,
+                           pencegahan1, pencegahan2, pencegahan3, pencegahan4, pencegahan5):
+    cursor = get_database_cursor()
+    try:
+        # Eksekusi query SQL untuk menyimpan data ke tabel diseases
+        insert_query = "INSERT INTO diseases (kode_penyakit, penyakit, definisi, pengobatan1, pengobatan2, pengobatan3, pengobatan4, pengobatan5, pencegahan1, pencegahan2, pencegahan3, pencegahan4, pencegahan5) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(insert_query, (id_penyakit, nama_penyakit, definisi, pengobatan1, pengobatan2, pengobatan3, pengobatan4, pengobatan5, pencegahan1, pencegahan2, pencegahan3, pencegahan4, pencegahan5))
+        db.commit()
+    except Exception as e:
+        print("Error during insert:", str(e))
+        db.rollback()
+
+def get_treatments():
+    cursor = get_database_cursor()
+    cursor.execute("SELECT * FROM treatments")
+    return cursor.fetchall()
+
+# Fungsi untuk mendapatkan data pencegahan dari tabel pencegahan
+def get_preventions():
+    cursor = get_database_cursor()
+    cursor.execute("SELECT * FROM preventions")
+    return cursor.fetchall()
+def get_disease_by_code(kode_penyakit):
+    cursor = get_database_cursor()
+    query = "SELECT * FROM diseases WHERE kode_penyakit = %s"
+    cursor.execute(query, (kode_penyakit,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result
+def update_disease(kode_penyakit, new_data):
+    cursor = get_database_cursor()
+    try:
+        # Menggunakan kode_penyakit dan data baru untuk membangun query SQL yang mengubah data penyakit di database
+        query = """UPDATE diseases
+                   SET definisi = %s,
+                       pengobatan1 = %s,
+                       pengobatan2 = %s,
+                       pengobatan3 = %s,
+                       pengobatan4 = %s,
+                       pengobatan5 = %s,
+                       pencegahan1 = %s,
+                       pencegahan2 = %s,
+                       pencegahan3 = %s,
+                       pencegahan4 = %s,
+                       pencegahan5 = %s
+                   WHERE kode_penyakit = %s"""
+
+        # Mengisi parameter query dengan data yang diperlukan
+        params = (new_data['definisi'], new_data['pengobatan1'], new_data['pengobatan2'], new_data['pengobatan3'],
+                 new_data['pengobatan4'], new_data['pengobatan5'], new_data['pencegahan1'], new_data['pencegahan2'],
+                 new_data['pencegahan3'], new_data['pencegahan4'], new_data['pencegahan5'], kode_penyakit)
+
+        # Mengeksekusi query SQL yang telah dibangun dan mencoba mengeksekusi perubahan yang diminta
+        with db.cursor() as cursor:
+            cursor.execute(query, params)
+            db.commit()
+
+        return True
+
+    except Exception as e:
+        print(f"Gagal memperbarui penyakit: {e}")
+        return False

@@ -102,7 +102,7 @@
           </li>
           <li class="nav-header">LOGOUT</li>
           <li class="nav-item">
-            <a href="/" class="nav-link">
+            <a href="/" class="nav-link" id="logoutLink">
               <i class="nav-icon fas fa-power-off"></i>
               <p>
                 Logout
@@ -156,131 +156,21 @@
                   </tr>
                   </thead>
                   <tbody>
+                  {% for disease in diseases %}
                   <tr>
-                    <td>1.</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
+                      <td>{{ loop.index }}</td>
+                      <td>{{ disease.kode_penyakit }}</td>
+                      <td>{{ disease.penyakit }}</td>
+                      <td>
+                          <a href="{{ url_for('updatepenyakit', kode_penyakit=disease.kode_penyakit) }}" class="custom-button">
+                              <i class="fas fa-pen"></i>
+                          </a>&nbsp;&nbsp;&nbsp;
+                          <a href="#" class="alertbuttonpenyakit custom-button" data-kodepenyakit="{{ disease.kode_penyakit }}">
+                              <i class="fas fa-trash"></i>
+                          </a>
+                      </td>
                   </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>Internet
-                      Explorer 5.5
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>Internet
-                      Explorer 6
-                    </td>
-                    <td>Win 98+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5.</td>
-                    <td>Internet Explorer 7</td>
-                    <td>Win XP SP2+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>6.</td>
-                    <td>AOL browser (AOL desktop)</td>
-                    <td>Win XP</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>7.</td>
-                    <td>Firefox 1.0</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>8.</td>
-                    <td>Firefox 1.5</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>9.</td>
-                    <td>Firefox 2.0</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>
-                      <a href="/updatepenyakit" class="custom-button">
-                        <i class="fas fa-pen"></i>
-                      </a>&nbsp;&nbsp;&nbsp;
-                      <a href="#" class="alertbutton custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
+                  {% endfor %}
                   </tbody>
                   <tfoot>
                   <tr>
@@ -336,11 +226,52 @@
 <script src="../static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="../static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../static/dist/js/adminlte.min.js"></script>
+<script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script>
 <script src="../static/dist/js/click.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="../static/dist/js/demo.js"></script>
 <!-- Page specific script -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var alertButtons = document.querySelectorAll('.alertbuttonpenyakit');
+    alertButtons.forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        var confirmDelete = confirm('Hi! Are you sure you want to remove this disease option?');
+        if (confirmDelete) {
+          var kodepenyakit = button.getAttribute('data-kodepenyakit');
+          fetch('/deletepenyakit/' + kodepenyakit, {
+            method: 'DELETE',
+          })
+          .then(function (response) {
+            if (response.ok) {
+              var row = button.closest('tr');
+              row.remove();
+              alert('The disease option you selected has been successfully deleted!');
+            } else {
+              alert('The disease option you selected was not successfully deleted!');
+            }
+          })
+          .catch(function (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan');
+          });
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  document.getElementById("logoutLink").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    var confirmLogout = confirm("Hi! are you sure you want to logout from the admin panel?");
+    if (confirmLogout) {
+      window.location.href = "/logout";  // Redirect ke endpoint logout
+    }
+  });
+</script>
 <script>
   $(function () {
     $("#example1").DataTable({

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom, add_prevention, kode_pencegahan, kode_pengobatan, add_treatment, add_symptom, kode_gejala
+from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom, add_prevention, kode_pencegahan, kode_pengobatan, add_treatment, add_symptom, kode_gejala, kode_penyakit, save_to_diseases_table, get_treatments, get_preventions, update_disease, kode_penyakit, get_disease_by_code
 
 app = Flask(__name__)
 app.secret_key = 'ara20102196ara'
@@ -56,8 +56,6 @@ def submit_diagnosis():
 
         if result:
             last_idu = result['user_id']
-
-            # Perbarui data pada tabel users
             cursor.execute("UPDATE users SET pilihan_gejala = %s WHERE user_id = %s", (pilihan_kode_gejala, last_idu))
             db.commit()
         else:
@@ -192,20 +190,45 @@ def updategejala(kode_gejala):
 
 @app.route('/penyakit')
 def penyakit():
-    return render_template('penyakitadm.html')
-
-@app.route('/addpenyakit')
-def addpenyakit():
-    cursor.execute("SELECT * FROM treatments")
-    treatments = cursor.fetchall()
-    cursor.execute("SELECT * FROM preventions")
-    preventions = cursor.fetchall()
+    cursor.execute("SELECT * FROM diseases")
+    diseases = cursor.fetchall()
     db.commit()
-    return render_template('addpenyakit.html', treatments=treatments, preventions=preventions)
+    print(diseases)
 
-@app.route('/updatepenyakit')
-def updatepenyakit():
-    return render_template('updatepenyakit.html')
+    return render_template('penyakitadm.html', diseases=diseases)
+
+@app.route('/updatepenyakit/<kode_penyakit>', methods=['GET', 'POST'])
+def updatepenyakit(kode_penyakit):
+    treatments = get_treatments()
+    preventions = get_preventions()
+
+    if request.method == 'POST':
+        new_data = {
+            'penyakit': request.form.get('penyakit'),
+            'definisi': request.form.get('definisi'),
+            'pengobatan1': request.form.get('pengobatan1'),
+            'pengobatan2': request.form.get('pengobatan2'),
+            'pengobatan3': request.form.get('pengobatan3'),
+            'pengobatan4': request.form.get('pengobatan4'),
+            'pengobatan5': request.form.get('pengobatan5'),
+            'pencegahan1': request.form.get('pencegahan1'),
+            'pencegahan2': request.form.get('pencegahan2'),
+            'pencegahan3': request.form.get('pencegahan3'),
+            'pencegahan4': request.form.get('pencegahan4'),
+            'pencegahan5': request.form.get('pencegahan5')
+        }
+
+        # Tambahkan kode_penyakit ke new_data
+        new_data['kode_penyakit'] = kode_penyakit
+
+        if update_disease(kode_penyakit, new_data):
+            return redirect(url_for('penyakit'))
+        else:
+            return render_template('updatepenyakit.html', error="Gagal memperbarui penyakit")
+
+    else:
+        disease = get_disease_by_code(kode_penyakit)
+        return render_template('updatepenyakit.html', disease=disease, treatments=treatments, preventions=preventions)
 
 @app.route('/basis')
 def basis():
@@ -383,6 +406,61 @@ def deletepengobatan(kode_pengobatan):
     finally:
         cursor.close()
 
+@app.route('/addpenyakit', methods=['GET', 'POST'])
+def addpenyakit():
+    if request.method == 'POST':
+        id_penyakit = kode_penyakit()
+        nama_penyakit = request.form.get('penyakit')
+        definisi = request.form.get('definisi')
+        pengobatan1 = request.form.get('pengobatan1')
+        pengobatan2 = request.form.get('pengobatan2')
+        pengobatan3 = request.form.get('pengobatan3')
+        pengobatan4 = request.form.get('pengobatan4')
+        pengobatan5 = request.form.get('pengobatan5')
+        pencegahan1 = request.form.get('pencegahan1')
+        pencegahan2 = request.form.get('pencegahan2')
+        pencegahan3 = request.form.get('pencegahan3')
+        pencegahan4 = request.form.get('pencegahan4')
+        pencegahan5 = request.form.get('pencegahan5')
+
+
+        save_to_diseases_table(id_penyakit, nama_penyakit, definisi, pengobatan1, pengobatan2, pengobatan3, pengobatan4, pengobatan5, pencegahan1, pencegahan2, pencegahan3, pencegahan4, pencegahan5)
+
+        # Redirect ke halaman penyakit
+        return redirect(url_for('penyakit'))
+
+    # Perbarui dropdown untuk pengobatan dan pencegahan
+    treatments = get_treatments()
+    preventions = get_preventions()
+
+    # Jika metode GET, tampilkan formulir
+    id_penyakit = kode_penyakit()
+    return render_template('addpenyakit.html', treatments=treatments, preventions=preventions, kode_penyakit=id_penyakit)
+
+@app.route('/deletepenyakit/<kode_penyakit>', methods=['DELETE'])
+def deletepenyakit(kode_penyakit):
+    try:
+        cursor = get_database_cursor()
+
+        # Cek apakah penyakit dengan kode_penyakit tertentu ada di database
+        cursor.execute("SELECT * FROM diseases WHERE kode_penyakit = %s", (kode_penyakit,))
+        penyakit = cursor.fetchone()
+
+        if penyakit:
+            # Hapus penyakit dari database
+            cursor.execute("DELETE FROM diseases WHERE kode_penyakit = %s", (kode_penyakit,))
+            db.commit()
+            return 'penyakit berhasil dihapus', 200
+        else:
+            return 'penyakit tidak ditemukan', 404
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.rollback()
+        return 'Terjadi kesalahan', 500
+
+    finally:
+        cursor.close()
 
 if __name__ == '__main__':
     app.run (debug = True)

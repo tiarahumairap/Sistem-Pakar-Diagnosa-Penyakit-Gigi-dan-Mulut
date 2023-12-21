@@ -102,7 +102,7 @@
           </li>
           <li class="nav-header">LOGOUT</li>
           <li class="nav-item">
-            <a href="/" class="nav-link">
+            <a href="/" class="nav-link" id="logoutLink">
               <i class="nav-icon fas fa-power-off"></i>
               <p>
                 Logout
@@ -234,7 +234,16 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../static/dist/js/demo.js"></script>
 <!-- Page specific script -->
+<script>
+  document.getElementById("logoutLink").addEventListener("click", function(event) {
+    event.preventDefault();
 
+    var confirmLogout = confirm("Hi! are you sure you want to logout from the admin panel?");
+    if (confirmLogout) {
+      window.location.href = "/logout";  // Redirect ke endpoint logout
+    }
+  });
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var alertButtons = document.querySelectorAll('.alertbuttonprev');
