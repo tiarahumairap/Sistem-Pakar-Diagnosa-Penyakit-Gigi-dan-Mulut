@@ -19,7 +19,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a class="brand-link">
+    <a href="/" class="brand-link">
       <img src="../static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
     </a>
   <!-- Navbar -->
@@ -141,8 +141,8 @@
               </div>
               <div class="card-body">
                 <div class="form-group">
-                  <label for="exampleInputID">{{nama_penyakit}} nama penyakit</label>
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur vel veniam temporibus, consectetur aliquam alias excepturi rerum modi ducimus nesciunt expedita qui dolorem quod veritatis? Architecto laborum assumenda voluptates saepe?</p>
+                  <label for="exampleInputID">{{ data.kode_basis }} - {{ data.penyakit }}</label>
+                  <p>{{ data.definisi }}</p>
                 </div>
               </div>
             </div>
@@ -169,81 +169,26 @@
                     <th>ID Gejala</th>
                     <th>Gejala</th>
                     <th>Bobot</th>
-                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>1.</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>3</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>3</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>Internet
-                      Explorer 5.5
-                    </td>
-                    <td>Win 95+</td>
-                    <td>3</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>Internet
-                      Explorer 6
-                    </td>
-                    <td>Win 98+</td>
-                    <td>3</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5.</td>
-                    <td>Internet Explorer 7</td>
-                    <td>Win XP SP2+</td>
-                    <td>3</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
+                    {% for i in range(1, 6) %}
+                      {% if data['gejala' ~ i] is defined %}
+                        <tr>
+                          <td>{{ i }}</td>
+                          <td>{{ data['kode_gejala' ~ i] }}</td>
+                          <td>{{ data['gejala' ~ i] }}</td>
+                          <td>{{ data['bobot' ~ i] }}</td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
                   </tbody>
                   <tfoot>
                   <tr>
                     <th>No.</th>
-                    <th>ID Penyakit</th>
-                    <th>Penyakit</th>
+                    <th>ID Gejala</th>
+                    <th>Gejala</th>
                     <th>Bobot</th>
-                    <th>Action</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -269,75 +214,24 @@
                     <th>No.</th>
                     <th>ID Pengobatan</th>
                     <th>Pengobatan</th>
-                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>1.</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>Internet
-                      Explorer 5.5
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>Internet
-                      Explorer 6
-                    </td>
-                    <td>Win 98+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5.</td>
-                    <td>Internet Explorer 7</td>
-                    <td>Win XP SP2+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
+                    {% for i in range(1, 6) %}
+                      {% if data['pengobatan' ~ i] is defined %}
+                        <tr>
+                          <td>{{ i }}</td>
+                          <td>{{ data['kode_pengobatan' ~ i] }}</td>
+                          <td>{{ data['pengobatan' ~ i] }}</td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
                   </tbody>
                   <tfoot>
                   <tr>
                     <th>No.</th>
                     <th>ID Pengobatan</th>
                     <th>Pengobatan</th>
-                    <th>Action</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -363,75 +257,24 @@
                     <th>No.</th>
                     <th>ID Pencegahan</th>
                     <th>Pencegahan</th>
-                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>1.</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2.</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3.</td>
-                    <td>Internet
-                      Explorer 5.5
-                    </td>
-                    <td>Win 95+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4.</td>
-                    <td>Internet
-                      Explorer 6
-                    </td>
-                    <td>Win 98+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5.</td>
-                    <td>Internet Explorer 7</td>
-                    <td>Win XP SP2+</td>
-                    <td>
-                      <a href="#" class="alertbutton" class="custom-button">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </td>
-                  </tr>
+                    {% for i in range(1, 6) %}
+                      {% if data['pencegahan' ~ i] is defined %}
+                        <tr>
+                          <td>{{ i }}</td>
+                          <td>{{ data['kode_pencegahan' ~ i] }}</td>
+                          <td>{{ data['pencegahan' ~ i] }}</td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
                   </tbody>
                   <tfoot>
                   <tr>
                     <th>No.</th>
                     <th>ID Pencegahan</th>
                     <th>Pencegahan</th>
-                    <th>Action</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -483,52 +326,6 @@
       window.location.href = "/logout";  // Redirect ke endpoint logout
     }
   });
-</script>
-<script>
-$(function () {
-  $.validator.setDefaults({
-    submitHandler: function () {
-      alert( "Form successful submitted!" );
-    }
-  });
-  $('#quickForm').validate({
-    rules: {
-      email: {
-        required: true,
-        email: true,
-      },
-      password: {
-        required: true,
-        minlength: 5
-      },
-      terms: {
-        required: true
-      },
-    },
-    messages: {
-      email: {
-        required: "Please enter a email address",
-        email: "Please enter a valid email address"
-      },
-      password: {
-        required: "Please provide a password",
-        minlength: "Your password must be at least 5 characters long"
-      },
-      terms: "Please accept our terms"
-    },
-    errorElement: 'span',
-    errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
-      element.closest('.form-group').append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass('is-invalid');
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass('is-invalid');
-    }
-  });
-});
 </script>
 </body>
 </html>

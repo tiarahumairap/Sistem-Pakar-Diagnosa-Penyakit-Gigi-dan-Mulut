@@ -289,6 +289,17 @@
   </footer>
 </div>
 <!-- ./wrapper -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var currentPath = window.location.pathname;
+    var activeElement = document.querySelector('li.nav-item a[href="' + currentPath + '"]');
+
+    // Menambahkan kelas active pada elemen li yang sesuai
+    if (activeElement) {
+      activeElement.closest('li.nav-item').classList.add('active');
+    }
+  });
+</script>
 
 <script>
   document.getElementById("logoutLink").addEventListener("click", function(event) {
@@ -302,6 +313,7 @@
 </script>
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
