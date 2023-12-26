@@ -145,6 +145,7 @@ def indexadm():
 
 @app.route('/gejala') #index
 def gejala():
+    cursor = get_database_cursor()
     cursor.execute("SELECT * FROM symptoms")
     symptoms = cursor.fetchall()
     db.commit()
@@ -188,6 +189,7 @@ def updategejala(kode_gejala):
 
 @app.route('/penyakit')
 def penyakit():
+    cursor = get_database_cursor()
     cursor.execute("SELECT * FROM diseases")
     diseases = cursor.fetchall()
     db.commit()
@@ -229,10 +231,8 @@ def updatepenyakit(kode_penyakit):
 
 @app.route('/basis')
 def basis():
+    cursor = get_database_cursor()
     try:
-        # Buka koneksi ke database dan dapatkan cursor
-        cursor = get_database_cursor()
-
         # Eksekusi query
         cursor.execute("""
             SELECT basis.kode_basis, diseases.penyakit,
@@ -291,6 +291,7 @@ def detailbasis(kode_basis):
 
 @app.route('/pengobatan')
 def pengobatan():
+    cursor = get_database_cursor()
     cursor.execute("SELECT * FROM treatments")
     treatments = cursor.fetchall()
     db.commit()
@@ -333,6 +334,7 @@ def addpengobatan():
 
 @app.route('/pencegahan')
 def pencegahan():
+    cursor = get_database_cursor()
     cursor.execute("SELECT * FROM preventions")
     preventions = cursor.fetchall()
     db.commit()

@@ -215,6 +215,29 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var currentPath = window.location.pathname;
+    var activeElement = document.querySelector('li.nav-item a[href="' + currentPath + '"]');
+
+    // Menambahkan kelas active pada elemen li yang sesuai
+    if (activeElement) {
+      activeElement.closest('li.nav-item').classList.add('active');
+    }
+  });
+</script>
+
+<script>
+  document.getElementById("logoutLink").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    var confirmLogout = confirm("Hi! are you sure you want to logout from the admin panel?");
+    if (confirmLogout) {
+      window.location.href = "/logout";  // Redirect ke endpoint logout
+    }
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="../static/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
