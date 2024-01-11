@@ -298,49 +298,21 @@
     font-size: large;
 }
 
-#next {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#next{
     background: #472F5B;
     color: #fff;
     border: none;
     padding: 10px;
+    margin-top: 2cm;
     cursor: pointer;
     border-radius: 10px;
+    width: auto;
+    height: 1.5cm;
+    margin-left: 2cm;
+    margin-right: 2cm;
     font-weight: 900;
     font-size: larger;
-    text-align: center;
-    text-decoration: none;
-    height: 1.5cm;
-    margin: 2cm; /* Menggantikan margin-left dan margin-right */
 }
-
-  .card-body {
-    flex: 1;
-    padding: 1.25rem;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-
-  th, td {
-    border: 1px solid #472f5b90;
-    padding: 8px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #472f5b90;
-  }
-
-  tr[data-widget="expandable-table"] {
-    cursor: pointer;
-  }
-
 #next:hover{
     background-color: #472f5bda;
 }
@@ -378,7 +350,7 @@
 }
 
 .righty{
-    margin-left: 8cm;
+    margin-left: 10cm;
     align-items: center;
     height: auto;
 }

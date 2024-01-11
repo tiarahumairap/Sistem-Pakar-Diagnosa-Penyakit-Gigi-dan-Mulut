@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom, add_prevention, kode_pencegahan, kode_pengobatan, add_treatment, add_symptom, kode_gejala, kode_penyakit, save_to_diseases_table, get_treatments, get_preventions, update_disease, kode_penyakit, get_disease_by_code, kode_basis, get_symptoms, get_diseases, save_to_basis_table, get_detail_basis
+from database import initialize_database, create_database, id_user, get_database_cursor, db, insert_treatments, insert_preventions, insert_symptoms, insert_admins, check_admin_credentials, get_prevention_by_code, update_prevention, get_treatment_by_code, update_treatment, get_symptom_by_code, update_symptom, add_prevention, kode_pencegahan, kode_pengobatan, add_treatment, add_symptom, kode_gejala, kode_penyakit, save_to_diseases_table, get_treatments, get_preventions, update_disease, kode_penyakit, get_disease_by_code, kode_basis, get_symptoms, get_diseases, save_to_basis_table, get_detail_basis, update_users_table, get_diagnosis, result_symptom_code, result_disease_code
 
 app = Flask(__name__)
 app.secret_key = 'ara20102196ara'
@@ -12,6 +12,10 @@ insert_preventions()
 insert_symptoms()
 insert_admins()
 
+@app.route("/")
+def home():
+    return render_template('indexweb.html')
+
 @app.route('/addu', methods=['POST'])
 def addu():
     name = request.form['name']
@@ -23,6 +27,7 @@ def addu():
     db.commit()
 
     session['uname'] = name
+    session['next_id'] = next_id
 
     return redirect(url_for('dtdiag'))
 
@@ -34,71 +39,56 @@ def dtdiag():
     cursor.execute("SELECT * FROM symptoms")
     symptoms = cursor.fetchall()
     db.commit()
-    print(symptoms)
-
 
     return render_template('indexdata.html', uname=user_name, symptoms=symptoms)
 
 @app.route('/submit_diagnosis', methods=['POST'])
 def submit_diagnosis():
-    try:
+    user_name = session.get('uname')
+    next_id = session.get('next_id')
 
-        selected_symptom_codes = request.form.getlist('gejala')
-        print("Kode Gejala yang dicentang:", selected_symptom_codes)
+    if request.method == 'POST':
+        selected_gejala = request.form.getlist('gejala')[:5]
+        selected_symptoms = request.form.getlist('gejala')[:5]
+        diagnosis_result = get_diagnosis(selected_symptoms)
+        disease_name = None
 
-        # Gabungkan nilai gejala menjadi string
-        pilihan_kode_gejala = ",".join(selected_symptom_codes)
+        if isinstance(diagnosis_result, tuple) and len(diagnosis_result) == 2:
+            first_element = diagnosis_result[0]
+            if isinstance(first_element, dict) and 'kode_penyakit' in first_element:
+                disease_name = result_disease_code(first_element['kode_penyakit'])
+        elif isinstance(diagnosis_result, dict) and 'kode_penyakit' in diagnosis_result:
+            disease_name = result_disease_code(diagnosis_result['kode_penyakit'])
 
-        # Dapatkan ID terakhir yang terdaftar dalam tabel users
-        cursor.execute("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1")
-        result = cursor.fetchone()
 
-        if result:
-            last_idu = result['user_id']
-            cursor.execute("UPDATE users SET pilihan_gejala = %s WHERE user_id = %s", (pilihan_kode_gejala, last_idu))
-            db.commit()
-        else:
-            # Jika tidak ada baris dengan user_id tersebut, tambahkan baris baru
-            next_id = id_user()
-            cursor.execute("INSERT INTO users (user_id, pilihan_gejala) VALUES (%s, %s)", (next_id, pilihan_kode_gejala))
-            db.commit()
+        # Dapatkan nama gejala berdasarkan kode gejala yang dipilih
+        selected_gejala_names = [result_symptom_code(gejala) for gejala in selected_gejala]
 
-    except Exception as e:
-        print("Error:", str(e))
-        db.rollback()
+        session['selected_gejala_names'] = selected_gejala_names
+        session['disease_name'] = disease_name
+        update_users_table(next_id, selected_gejala, diagnosis_result)
 
-    finally:
-        cursor.close()
+        return redirect(url_for('result', uname=user_name, selected_symptoms=','.join(selected_gejala)))
 
-    return redirect(url_for('indexresult.html', message='Data gejala telah disimpan ke dalam database!', pilihan_kode_gejala=pilihan_kode_gejala))
+
 
 @app.route('/result')
 def result():
     user_name = session.get('uname')
+    selected_symptoms = request.args.get('selected_symptoms').split(',')
 
-    # Dapatkan data pilihan_gejala dari tabel users
-    cursor.execute("SELECT pilihan_gejala FROM users WHERE name = %s", (user_name,))
-    result = cursor.fetchone()
+    # Handle None result from get_diagnosis
+    result = get_diagnosis(selected_symptoms)
+    if result is None:
+        # Handle the case when get_diagnosis returns None
+        return render_template('indexresult.html', uname=user_name, selected_symptoms=selected_symptoms, error_message="Tidak ada hasil diagnosa yang ditemukan.", diagnosis_result=None, result_symptom_code=result_symptom_code, treatment_and_prevention=treatment_and_prevention)
 
-    gejalas = []
+    diagnosis_result, treatment_and_prevention, similarities = result
+    selected_gejala = session.get('selected_gejala_names', [])
+    disease_name = diagnosis_result.get('disease_name')
 
-    if result and result['pilihan_gejala']:
-        pilihan_gejala = result['pilihan_gejala'].split(",")  # Pisahkan gejala menjadi list
+    return render_template('indexresult.html', diagnosis_result=diagnosis_result, uname=user_name, selected_symptoms=selected_symptoms, treatment_and_prevention=treatment_and_prevention, selected_gejala=selected_gejala, result_symptom_code=result_symptom_code, disease_name=disease_name, similarities=similarities)
 
-        # Lakukan apa yang perlu Anda lakukan dengan pilihan_gejala, misalnya mendapatkan gejala
-        for gejala_kode in pilihan_gejala:
-            cursor.execute("SELECT gejala FROM symptoms WHERE kode_gejala = %s", (gejala_kode,))
-            result_gejala = cursor.fetchone()
-
-            if result_gejala and result_gejala['gejala']:
-                gejala = result_gejala['gejala']
-                gejalas.append(gejala)
-
-    return render_template('indexresult.html', uname=user_name, gejalas=gejalas)
-
-@app.route("/")
-def home():
-    return render_template('indexweb.html')
 
 @app.route("/loginadm", methods=['GET', 'POST'])
 def loginadm():
@@ -129,28 +119,48 @@ def indiag():
 
 @app.route('/indexadm') #index
 def indexadm():
-    cursor.execute("SELECT COUNT(*) as total_gejala FROM symptoms")
-    result = cursor.fetchone()
-    total_gejala = result['total_gejala']
+    cursor = get_database_cursor()
+    try:
+        cursor.execute("SELECT COUNT(*) as total_gejala FROM symptoms")
+        result = cursor.fetchone()
+        total_gejala = result['total_gejala']
 
-    cursor.execute("SELECT COUNT(*) as total_pengobatan FROM treatments")
-    result = cursor.fetchone()
-    total_pengobatan = result['total_pengobatan']
+        cursor.execute("SELECT COUNT(*) as total_pengobatan FROM treatments")
+        result = cursor.fetchone()
+        total_pengobatan = result['total_pengobatan']
 
-    cursor.execute("SELECT COUNT(*) as total_pencegahan FROM preventions")
-    result = cursor.fetchone()
-    total_pencegahan = result['total_pencegahan']
+        cursor.execute("SELECT COUNT(*) as total_pencegahan FROM preventions")
+        result = cursor.fetchone()
+        total_pencegahan = result['total_pencegahan']
 
-    return render_template('indexadm.html', total_gejala=total_gejala, total_pengobatan=total_pengobatan, total_pencegahan=total_pencegahan)
+        cursor.execute("SELECT COUNT(*) as total_penyakit FROM diseases")
+        result = cursor.fetchone()
+        total_penyakit = result['total_penyakit']
 
-@app.route('/gejala') #index
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        return render_template('indexadm.html', total_gejala=total_gejala, total_pengobatan=total_pengobatan, total_pencegahan=total_pencegahan, total_penyakit=total_penyakit, users=users)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        cursor.close()
+        db.close()
+
+@app.route('/gejala')
 def gejala():
     cursor = get_database_cursor()
-    cursor.execute("SELECT * FROM symptoms")
-    symptoms = cursor.fetchall()
-    db.commit()
+    try:
+        cursor.execute("SELECT * FROM symptoms")
+        symptoms = cursor.fetchall()
+        db.commit()
 
-    return render_template('gejaladm.html', symptoms=symptoms)
+        return render_template('gejaladm.html', symptoms=symptoms)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        cursor.close()
+        db.close()
 
 @app.route('/addgejala', methods=['GET', 'POST'])
 def addgejala():
@@ -190,11 +200,17 @@ def updategejala(kode_gejala):
 @app.route('/penyakit')
 def penyakit():
     cursor = get_database_cursor()
-    cursor.execute("SELECT * FROM diseases")
-    diseases = cursor.fetchall()
-    db.commit()
+    try:
+        cursor.execute("SELECT * FROM diseases")
+        diseases = cursor.fetchall()
+        db.commit()
 
-    return render_template('penyakitadm.html', diseases=diseases)
+        return render_template('penyakitadm.html', diseases=diseases)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        cursor.close()
+        db.close()
 
 @app.route('/updatepenyakit/<kode_penyakit>', methods=['GET', 'POST'])
 def updatepenyakit(kode_penyakit):
@@ -254,11 +270,9 @@ def basis():
         return render_template('basisadm.html', basis=basis)
 
     except Exception as e:
-        # Handle exception (contohnya, print pesan error)
         print("Error:", str(e))
 
     finally:
-        # Pastikan untuk menutup cursor dan koneksi setelah selesai
         cursor.close()
         db.close()
 
@@ -292,12 +306,17 @@ def detailbasis(kode_basis):
 @app.route('/pengobatan')
 def pengobatan():
     cursor = get_database_cursor()
-    cursor.execute("SELECT * FROM treatments")
-    treatments = cursor.fetchall()
-    db.commit()
-    print(treatments)
+    try:
+        cursor.execute("SELECT * FROM treatments")
+        treatments = cursor.fetchall()
+        db.commit()
 
-    return render_template('pengobatanadm.html', treatments=treatments)
+        return render_template('pengobatanadm.html', treatments=treatments)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        cursor.close()
+        db.close()
 
 @app.route('/updatepengobatan/<kode_pengobatan>', methods=['GET', 'POST'])
 def updatepengobatan(kode_pengobatan):
@@ -335,12 +354,17 @@ def addpengobatan():
 @app.route('/pencegahan')
 def pencegahan():
     cursor = get_database_cursor()
-    cursor.execute("SELECT * FROM preventions")
-    preventions = cursor.fetchall()
-    db.commit()
-    print(preventions)
+    try:
+        cursor.execute("SELECT * FROM preventions")
+        preventions = cursor.fetchall()
+        db.commit()
 
-    return render_template('pencegahanadm.html', preventions=preventions)
+        return render_template('pencegahanadm.html', preventions=preventions)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        cursor.close()
+        db.close()
 
 @app.route('/updatepencegahan/<kode_pencegahan>', methods=['GET', 'POST'])
 def updatepencegahan(kode_pencegahan):

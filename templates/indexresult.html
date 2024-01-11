@@ -14,13 +14,13 @@
             <img class="logo1" src="../static/dist/img/logo1.png" alt="XpertDO's Logo">
         </a>
         <div class="menu">
-            <a class="menu-item" href="indexweb.html">Home</a>
-            <a class="menu-item" href="indexweb.html#information">Information</a>
-            <a class="menu-item" href="indexweb.html#diagnose">Diagnose</a>
-            <a class="menu-item1" href="indexweb.html#about">About</a>
+            <a class="menu-item" href="{{ url_for('home') }}">Home</a>
+            <a class="menu-item" href="{{ url_for('home') }}#information">Information</a>
+            <a class="menu-item" href="{{ url_for('home') }}#diagnose">Diagnose</a>
+            <a class="menu-item1" href="{{ url_for('home') }}#about">About</a>
         </div>
         <div class="menu1">
-            <a href="loginweb.html" class="menu-item2">
+            <a href="/login" class="menu-item2">
                 <i class="fas fa-user"></i> &nbsp; Admin</a>
         </div>
     </div>
@@ -35,58 +35,126 @@
         </div>
     </section>
     <section id="home" class="cont-diag">
-        <p class="title">Hasil Diagnosa</p>
+        <p class="title">Hasil Perhitungan</p>
         <div class="container">
             <div class="center-box">
                 <div class="dashed1">
-                </br>
-                    <p>D I A G N O S A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <strong> {{ disease }}</strong></p>
-                </br></br>
-                    <p>S I M I L A R I T Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :<strong> {{ hasil }}</strong></p>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>Kode Penyakit</th>
+                                <th>Penyakit</th>
+                                <th>Tingkat Similarity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for user in similarities %}
+                                <tr>
+                                    <td>{{ loop.index}}</td>
+                                    <td>{{ user.kode_penyakit }}</td>
+                                    <td>{{ user.penyakit }}</td>
+                                    <td>{{ '%.0f' % (user.similarity * 100) }}%</td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </br></br>
+                      <!-- /.card-body -->
+                    </div>
                 </div>
             </div>
+        </div>
+        </div>
+            <p class="title">Hasil Diagnosis</p>
             <div class="center-box">
                 <div class="dashed1">
+                </br></br>
+                {% if diagnosis_result %}
+                <p>
+                    D I A G N O S A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                    <strong> {{ diagnosis_result.kode_penyakit }} - </strong>
+                    {% if diagnosis_result.disease_name is not none %}
+                        <strong>{{ diagnosis_result.disease_name }}</strong>
+                    {% else %}
+                        <em>Nama penyakit tidak ditemukan.</em>
+                    {% endif %}
+                </p>
+                </br></br>
+                <p>S I M I L A R I T Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <strong>{{ diagnosis_result.similarity }}</strong></p>
+                    {% else %}
+                        <p>Tidak ada hasil diagnosa yang ditemukan.</p>
+                    {% endif %}
+                </br></br>
+                </div>
+            </div>
+            <p class="title">Penjelasan Mengenai Penyakit Terkait</p>
+            <!-- <div class="center-box">
+                <div class="dashed1">
                 </br>
+                <p>
+                    D E F I N I S I&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                    {% if diagnosis_result %}
+                        <p>
+                            {% if diagnosis_result.disease_definition %}
+                                {{ diagnosis_result.disease_definition }}
+                            {% else %}
+                                <em>Definisi tidak tersedia.</em>
+                            {% endif %}
+                        </p>
+                    {% else %}
+                        <em>{{ error_message }}</em>
+                    {% endif %}
+                </p>
+            </br>
+                </div>
+            </div> -->
+            <div class="center-box1">
+                <div class="dashed4">
+                </br></br>
                     <p>G E J A L A &nbsp;&nbsp; Y A N G &nbsp;&nbsp; A N D A &nbsp;&nbsp; P I L I H</p>
                     </br>
                     <ol>
-                        {% for gejala in symptoms%}
-                            <li>{{ gejala }}</li>
-                        {% endfor %}
+                        {% if selected_symptoms %}
+                            {% for gejala_code in selected_symptoms %}
+                                {% set gejala_name = result_symptom_code(gejala_code) %}
+                                <li>{{ gejala_name }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Tidak ada gejala yang dipilih.</li>
+                        {% endif %}
                     </ol>
                 </div>
             </div>
             <div class="container2">
                 <div class="center-boxr">
                     <div class="dashed2">
-                    </br>
+                    </br></br>
                         <p>P E N G O B A T A N</p>
                     </br>
-                        <!-- <ol>
-                            <li>{{pengobatan1}}</li>
-                            <li>{{pengobatan2}}</li>
-                            <li>{{pengobatan3}}</li>
-                            <li>{{pengobatan4}}</li>
-                            <li>{{pengobatan5}}</li>
-                        </ol> -->
+                        <ol>
+                            {% for treatment in treatment_and_prevention['pengobatan'] %}
+                                <li>{{ treatment }}</li>
+                            {% endfor %}
+                        </ol>
                     </div>
                 </div>
                 <div class="center-boxl">
                     <div class="dashed3">
+                    </br></br>
                         <P>P E N C E G A H A N</P>
                     </br>
-                        <!-- <ol>
-                            <li>{{pencegahan1}}</li>
-                            <li>{{pencegahan2}}</li>
-                            <li>{{pencegahan3}}</li>
-                            <li>{{pencegahan4}}</li>
-                            <li>{{pencegahan5}}</li>
-                        </ol> -->
+                    <ol>
+                        {% for prevention in treatment_and_prevention['pencegahan'] %}
+                            <li>{{ prevention }}</li>
+                        {% endfor %}
+                    </ol>
                     </div>
                 </div>
             </div>
-            <button id="next" type="button" onclick="location.href='indexweb.html';">F I N I S H</button>
+            <a id="next" type="button" href="{{ url_for('home') }}">F I N I S H</a>
         </div>
     </section>
 

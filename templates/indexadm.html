@@ -221,46 +221,16 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr data-widget="expandable-table" aria-expanded="false">
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>13</td>
-                      <td>11-7-2014</td>
-                      <td>Approved</td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr data-widget="expandable-table" aria-expanded="false">
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>13</td>
-                      <td>11-7-2014</td>
-                      <td>Approved</td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr data-widget="expandable-table" aria-expanded="false">
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>13</td>
-                      <td>11-7-2014</td>
-                      <td>Approved</td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr data-widget="expandable-table" aria-expanded="false">
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>13</td>
-                      <td>11-7-2014</td>
-                      <td>Approved</td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr data-widget="expandable-table" aria-expanded="false">
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>13</td>
-                      <td>11-7-2014</td>
-                      <td>Approved</td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
+                    {% for user in users %}
+                      <tr data-widget="expandable-table" aria-expanded="false">
+                          <td>{{ user.user_id }}</td>
+                          <td>{{ user.name }}</td>
+                          <td>{{ user.age }}</td>
+                          <td>{{ user.jk }}</td>
+                          <td>{{ user.similarity }}</td>
+                          <td>{{ user.hasil }}</td>
+                      </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>

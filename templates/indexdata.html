@@ -14,13 +14,13 @@
             <img class="logo1" src="../static/dist/img/logo1.png" alt="XpertDO's Logo">
         </a>
         <div class="menu">
-            <a class="menu-item" href="indexweb.html">Home</a>
-            <a class="menu-item" href="indexweb.html#information">Information</a>
-            <a class="menu-item" href="indexweb.html#diagnose">Diagnose</a>
-            <a class="menu-item1" href="indexweb.html#about">About</a>
+            <a class="menu-item" href="{{ url_for('home') }}">Home</a>
+            <a class="menu-item" href="{{ url_for('home') }}#information">Information</a>
+            <a class="menu-item" href="{{ url_for('home') }}#diagnose">Diagnose</a>
+            <a class="menu-item1" href="{{ url_for('home') }}#about">About</a>
         </div>
         <div class="menu1">
-            <a href="loginweb.html" class="menu-item2">
+            <a href="/login" class="menu-item2">
                 <i class="fas fa-user"></i> &nbsp; Admin</a>
         </div>
     </div>
@@ -29,7 +29,7 @@
     <section id="diagnosis" class="diag">
         <div>
         </br></br>
-            <p>Hallo, {{ uname }}! Welcome to diagnosis area!</p>
+            <p>Hallo, <strong>{{ uname }}</strong>! Welcome to diagnosis area!</p>
             </br>
             <h2>Now you can choose at least <strong> 5 symptoms</strong> that you feel!</h2>
         </br></br></br>
@@ -47,8 +47,8 @@
                             {% endfor %}
                         </br>
                         </p>
+                        <button id="next" class="next" type="submit">N E X T</button>
                     </form>
-                    <button id="next" class="next" type="button" onclick="location.href='indexresult.html';">N E X T</button>
                 </div>
             </div>
         </div>

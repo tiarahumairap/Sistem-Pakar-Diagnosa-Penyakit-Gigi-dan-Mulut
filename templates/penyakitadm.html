@@ -285,16 +285,7 @@
   });
 </script>
 
-<script>
-  document.getElementById("logoutLink").addEventListener("click", function(event) {
-    event.preventDefault();
 
-    var confirmLogout = confirm("Hi! are you sure you want to logout from the admin panel?");
-    if (confirmLogout) {
-      window.location.href = "/logout";  // Redirect ke endpoint logout
-    }
-  });
-</script>
 <script>
   $(function () {
     $("#example1").DataTable({

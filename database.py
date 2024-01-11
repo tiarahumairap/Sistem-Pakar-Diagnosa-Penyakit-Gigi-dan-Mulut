@@ -9,30 +9,38 @@ def initialize_database():
         host="localhost",
         user="root",
         password="",
-        database="xpertdo_trying"
+        database="xpertdo"
     )
 
     return db
 
 def get_database_cursor():
-    return db.cursor(dictionary = True)
+    try:
+        if not db.is_connected():
+            # Reconnect to the database if not connected
+            db.connect()
+        return db.cursor(dictionary=True)
+    except mysql.connector.Error as e:
+        print(f"Error while getting database cursor: {str(e)}")
+        raise
+
 
 def create_database():
     cursor = get_database_cursor()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(5) PRIMARY KEY, name VARCHAR(255) NOT NULL, age INT, jk CHAR(1) CHECK (jk IN ('L', 'P')), pilihan_gejala VARCHAR(5))")
-
-    cursor.execute("CREATE TABLE IF NOT EXISTS symptoms (kode_gejala VARCHAR(5) PRIMARY KEY, gejala VARCHAR(255) NOT NULL, bobot INT)")
-
     cursor.execute("CREATE TABLE IF NOT EXISTS treatments (kode_pengobatan VARCHAR(5) PRIMARY KEY, pengobatan VARCHAR(255) NOT NULL)")
 
     cursor.execute("CREATE TABLE IF NOT EXISTS preventions (kode_pencegahan VARCHAR(5) PRIMARY KEY, pencegahan VARCHAR(255) NOT NULL)")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS symptoms (kode_gejala VARCHAR(5) PRIMARY KEY, gejala VARCHAR(255) NOT NULL, bobot INT)")
 
     cursor.execute("CREATE TABLE IF NOT EXISTS admins (email VARCHAR(255) PRIMARY KEY, password VARCHAR(255) NOT NULL)")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS diseases (kode_penyakit VARCHAR(5) PRIMARY KEY, penyakit VARCHAR(255) NOT NULL, definisi TEXT, pengobatan1 VARCHAR(255), pengobatan2 VARCHAR(255), pengobatan3 VARCHAR(255), pengobatan4 VARCHAR(255), pengobatan5 VARCHAR(255), pencegahan1 VARCHAR(255), pencegahan2 VARCHAR(255), pencegahan3 VARCHAR(255), pencegahan4 VARCHAR(255), pencegahan5 VARCHAR(255), FOREIGN KEY (pengobatan1) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan2) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan3) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan4) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pengobatan5) REFERENCES treatments (kode_pengobatan), FOREIGN KEY (pencegahan1) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan2) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan3) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan4) REFERENCES preventions (kode_pencegahan), FOREIGN KEY (pencegahan5) REFERENCES preventions (kode_pencegahan))""")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS basis (kode_basis VARCHAR(5) PRIMARY KEY, penyakit VARCHAR (255) NOT NULL, gejala1 VARCHAR(255), gejala2 VARCHAR(255), gejala3 VARCHAR(255), gejala4 VARCHAR(255), gejala5 VARCHAR(255), FOREIGN KEY (penyakit) REFERENCES diseases (kode_penyakit), FOREIGN KEY (gejala1) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala2) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala3) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala4) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala5) REFERENCES symptoms (kode_gejala))""")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(5) PRIMARY KEY, name VARCHAR(255) NOT NULL, age INT, jk CHAR(1) CHECK (jk IN ('L', 'P')), pil_gejala1 VARCHAR(5), pil_gejala2 VARCHAR(5), pil_gejala3 VARCHAR(5), pil_gejala4 VARCHAR(5), pil_gejala5 VARCHAR(5), similarity VARCHAR(4), hasil VARCHAR (5), FOREIGN KEY (pil_gejala1) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala2) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala3) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala4) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala5) REFERENCES symptoms (kode_gejala), FOREIGN KEY (hasil) REFERENCES diseases (kode_penyakit))")
 
     cursor.close()
 
@@ -511,7 +519,7 @@ def get_detail_basis(kode_basis):
         cursor = get_database_cursor()
 
         # Menjalankan query SQL untuk mendapatkan detail basis
-        query = """ 
+        query = """
         SELECT basis.kode_basis,
             diseases.penyakit, diseases.definisi,
             symptoms1.kode_gejala AS kode_gejala1, symptoms1.gejala AS gejala1, symptoms1.bobot AS bobot1,
@@ -559,3 +567,152 @@ def get_detail_basis(kode_basis):
     except Exception as e:
         return str(e)
 
+def update_users_table(user_id, new_data, diagnosis_result):
+    try:
+        update_query = """UPDATE users SET pil_gejala1 = %s, pil_gejala2 = %s, pil_gejala3 = %s, pil_gejala4 = %s, pil_gejala5 = %s, similarity = %s, hasil = %s WHERE user_id = %s"""
+
+        params = [None] * 8
+
+        for i in range(min(5, len(new_data))):
+            params[i] = new_data[i]
+
+            if diagnosis_result and isinstance(diagnosis_result, tuple) and len(diagnosis_result) >= 2:
+                params[5] = diagnosis_result[0]['similarity']
+                params[6] = diagnosis_result[0]['kode_penyakit']
+
+        params[7] = user_id
+
+        with db.cursor() as cursor:
+            cursor.execute(update_query, tuple(params))
+            db.commit()
+
+        return True
+
+    except Exception as e:
+        print(f"Gagal memperbarui data users: {e}")
+        return False
+
+# MASUK KE PERHITUNGAN CASE BASED REASONING
+def calculate_similarity(selected_symptoms, disease_symptoms):
+    total_similarity = 0
+    total_bobot_gejala = 0
+    cursor = get_database_cursor()
+
+    for symptom in selected_symptoms:
+        # Ambil bobot gejala umum dari tabel symptoms
+        cursor.execute("SELECT bobot FROM symptoms WHERE kode_gejala = %s", (symptom,))
+        symptom_row = cursor.fetchone()
+
+        if symptom_row:
+            bobot = symptom_row['bobot']
+        else:
+            # Handle kasus ketika gejala tidak ditemukan
+            # Misalnya, atur bobot ke nilai default
+            bobot = 0
+        # Periksa keberadaan gejala pada penyakit
+        similarity = 1 if symptom in disease_symptoms else 0
+
+        # Hitung similarity dengan mempertimbangkan bobot
+        total_similarity += similarity * bobot
+        total_bobot_gejala += bobot
+
+    # Bagi total similarity dengan jumlah bobot dari penyakit yang dipilih
+    similarity = total_similarity / total_bobot_gejala
+    return similarity
+
+
+def get_diagnosis(selected_symptoms):
+    cursor = get_database_cursor()
+    treatment_and_prevention = None
+    try:
+        # Ambil data penyakit dan gejala dari database
+        cursor.execute("SELECT penyakit, gejala1, gejala2, gejala3, gejala4, gejala5 FROM basis")
+        basis_data = cursor.fetchall()
+
+        # Hitung kesamaan gejala untuk setiap penyakit
+        similarities = []
+        for basis in basis_data:
+            disease_code = basis['penyakit']
+            disease_name = result_disease_code(disease_code)
+            disease_symptoms = [basis[f'gejala{i}'] for i in range(1, 6)]
+            similarity = calculate_similarity(selected_symptoms, disease_symptoms)
+            similarities.append({'kode_penyakit': disease_code, 'penyakit': disease_name, 'similarity': similarity})
+
+        if not similarities:
+            return None
+
+        # Sorting hasil berdasarkan similarity tertinggi
+        sorted_results = sorted(similarities, key=lambda x: x['similarity'], reverse=True)
+
+        top_result = sorted_results[0]
+        diagnosis_result = {
+            'kode_penyakit': top_result['kode_penyakit'],
+            'similarity': f"{int(top_result['similarity'] * 100)}%",
+            'disease_name': top_result['penyakit']
+        }
+
+        similarity_value = top_result['similarity']
+        treatment_and_prevention = get_solution(diagnosis_result['kode_penyakit'])
+        diagnosis_result['similarity'] = f"{int(similarity_value * 100)}%"
+
+        return diagnosis_result, treatment_and_prevention, similarities
+
+    except Exception as e:
+        print(f"Error calculating diagnosis: {e}")
+        return None
+    finally:
+        cursor.close()
+
+def result_treatment_code(kode_pengobatan):
+    cursor = get_database_cursor()
+    query = "SELECT pengobatan FROM treatments WHERE kode_pengobatan = %s"
+    cursor.execute(query, (kode_pengobatan,))
+    treatment = cursor.fetchone()
+    cursor.close()
+    return treatment['pengobatan'] if treatment else None
+
+def result_prevention_code(kode_pencegahan):
+    cursor = get_database_cursor()
+    query = "SELECT pencegahan FROM preventions WHERE kode_pencegahan = %s"
+    cursor.execute(query, (kode_pencegahan,))
+    prevention = cursor.fetchone()
+    cursor.close()
+    return prevention['pencegahan'] if prevention else None
+
+def result_symptom_code(kode_gejala):
+    cursor = get_database_cursor()
+    query = "SELECT gejala FROM symptoms WHERE kode_gejala = %s"
+    cursor.execute(query, (kode_gejala,))
+    symptom = cursor.fetchone()
+    cursor.close()
+    return symptom['gejala'] if symptom else None
+
+def result_disease_code(kode_penyakit):
+    cursor = get_database_cursor()
+    query = "SELECT penyakit FROM diseases WHERE kode_penyakit = %s"
+    cursor.execute(query, (kode_penyakit,))
+    disease = cursor.fetchone()
+    cursor.close()
+    return disease['penyakit'] if disease else None
+
+def get_solution(disease_code):
+    cursor = get_database_cursor()
+    try:
+        cursor.execute("""
+            SELECT pengobatan1, pengobatan2, pengobatan3, pengobatan4, pengobatan5,
+                   pencegahan1, pencegahan2, pencegahan3, pencegahan4, pencegahan5
+            FROM diseases
+            WHERE kode_penyakit = %s
+        """, (disease_code,))
+        result = cursor.fetchone()
+        if result:
+            treatments = [result_treatment_code(result[f'pengobatan{i}']) for i in range(1, 6) if result[f'pengobatan{i}']]
+            preventions = [result_prevention_code(result[f'pencegahan{i}']) for i in range(1, 6) if result[f'pencegahan{i}']]
+            return {'pengobatan': treatments, 'pencegahan': preventions}
+        else:
+            return None
+    except Exception as e:
+        print(f"Error retrieving treatment and prevention by code: {e}")
+        return None
+    finally:
+        cursor.close()
