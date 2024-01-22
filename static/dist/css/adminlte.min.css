@@ -34046,8 +34046,8 @@
     color: #fff;
   }
   .dark-mode .card {
-    background-color: #8f79a1;
-    color: #fff;
+    background-color: #fff;
+    color: black;
   }
   .dark-mode .card .card {
     background-color: #3f474e;
@@ -35872,9 +35872,6 @@
   .card-body.p-0 .table thead > tr > td:last-of-type,
   .card-body.p-0 .table thead > tr > th:last-of-type {
     padding-right: 1.5rem;
-  }
-  .table-hover tbody tr.expandable-body:hover {
-    background-color: inherit !important;
   }
   [data-widget="expandable-table"] {
     cursor: pointer;

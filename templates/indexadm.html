@@ -17,16 +17,11 @@
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
-  <!-- Navbar -->
-  <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
     <a class="brand-link">
       <img src="../static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
     </a>
-  <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-dark">
-    <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -35,20 +30,15 @@
     </ul>
   </nav>
 
-    <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
           <p class="d-block"></br>&nbsp;&nbsp;&nbsp;&nbsp;Welcome to Admin Panel</p>
         </div>
       </div>
 
-      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
           <li class="nav-header">HOME</li>
           <li class="nav-item">
             <a href="/indexadm" class="nav-link">
@@ -110,35 +100,27 @@
           </li>
         </ul>
       </nav>
-      <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
   </aside>
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 fas fa-home">&nbsp;&nbsp;Dashboard</h1>
-          </div><!-- /.col -->
+          </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
             </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Info boxes -->
         <div class="row">
-          <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-white elevation-1"><i class="fas fa-book"></i></span>
@@ -147,39 +129,28 @@
                 <span class="info-box-text">Gejala</span>
                 <span class="info-box-number">{{total_gejala}}</span>
               </div>
-              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
           </div>
-          <!-- /.col -->
 
-          <!-- fix for small devices only -->
           <div class="clearfix hidden-md-up"></div>
 
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-white elevation-1"><i class="fas fa-disease"></i></span>
-
               <div class="info-box-content">
                 <span class="info-box-text">Penyakit</span>
                 <span class="info-box-number">{{total_penyakit}}</span>
               </div>
-              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
           </div>
-          <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-white elevation-1"><i class="fas fa-stethoscope"></i></span>
-
               <div class="info-box-content">
                 <span class="info-box-text">Pengobatan</span>
                 <span class="info-box-number">{{total_pengobatan}}</span>
               </div>
-              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
           </div>
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
@@ -189,25 +160,19 @@
                 <span class="info-box-text">Pencegahan</span>
                 <span class="info-box-number">{{total_pencegahan}}</span>
               </div>
-              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box -->
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
-      </div><!--/. container-fluid -->
+      </div>
     </section>
     <section class="content">
       <div class="container-fluid">
-        <!-- /.row -->
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Data Riwayat Pengguna</h3>
               </div>
-              <!-- ./card-header -->
               <div class="card-body">
                 <table class="table table-bordered table-hover">
                   <thead>
@@ -218,47 +183,70 @@
                       <th>JK</th>
                       <th>Similarity</th>
                       <th>Diagnose</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for user in users %}
-                      <tr data-widget="expandable-table" aria-expanded="false">
+                      <tr data-widget="expandable-table" aria-expanded="false" id="user{{ user.user_id }}">
                           <td>{{ user.user_id }}</td>
                           <td>{{ user.name }}</td>
                           <td>{{ user.age }}</td>
                           <td>{{ user.jk }}</td>
                           <td>{{ user.similarity }}</td>
-                          <td>{{ user.hasil }}</td>
+                          <td>{{ user.hasil }} - {{ get_disease_by_code(user.hasil).penyakit }}</td>
+                          <td>{{ user.status }}</td>
+                      </tr>
+                      <tr class="expandable-body" style="display: none;" style="border: 1px solid #000000;">
+                        <td colspan="7">
+                          <div>
+                            <table class="table table-bordered ">
+                              <thead>
+                                <tr>
+                                  <th>No.</th>
+                                  <th>Gejala</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for gejala_kode in [user.pil_gejala1, user.pil_gejala2, user.pil_gejala3, user.pil_gejala4, user.pil_gejala5] %}
+                                    {% if gejala_kode %}
+                                        {% set gejala = get_symptom_by_code(gejala_kode) %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ gejala.gejala }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </br>
+                          <div class="btn-add">
+                            <a href="/addbasisbaru?gejala1={{ user.pil_gejala1 }}&gejala2={{ user.pil_gejala2 }}&gejala3={{ user.pil_gejala3 }}&gejala4={{ user.pil_gejala4 }}&gejala5={{ user.pil_gejala5 }}" class="btn" id="addBasis">
+                                <i class="fas fa-plus"></i> &nbsp; Add Basis Baru</a>
+                          </div>
+                          </div>
+                        </td>
                       </tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
           </div>
         </div>
-        <!-- /.row -->
         <div class="row">
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
 
-  <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
   </aside>
-  <!-- /.control-sidebar -->
 
-  <!-- Main Footer -->
   <footer class="main-footer">
     Copyright  &copy; Website 2023 <strong> XpertDO</strong> | Credit By: Tiara Humaira Putri
   </footer>
 </div>
-<!-- ./wrapper -->
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var currentPath = window.location.pathname;
@@ -281,6 +269,7 @@
     }
   });
 </script>
+
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -305,5 +294,20 @@
 <script src="dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="dist/js/../static/pages/dashboard2.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Menambahkan event listener untuk setiap baris tabel
+    var expandableRows = document.querySelectorAll('tr[data-widget="expandable-table"]');
+    expandableRows.forEach(function (row) {
+      row.addEventListener('click', function () {
+        // Toggle display untuk bagian yang akan di-expand/collapse
+        var expandableBody = row.nextElementSibling;
+        expandableBody.style.display = (expandableBody.style.display === 'none') ? 'table-row' : 'none';
+      });
+    });
+  });
+</script>
+
 </body>
 </html>

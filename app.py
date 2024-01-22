@@ -70,8 +70,6 @@ def submit_diagnosis():
 
         return redirect(url_for('result', uname=user_name, selected_symptoms=','.join(selected_gejala)))
 
-
-
 @app.route('/result')
 def result():
     user_name = session.get('uname')
@@ -81,14 +79,13 @@ def result():
     result = get_diagnosis(selected_symptoms)
     if result is None:
         # Handle the case when get_diagnosis returns None
-        return render_template('indexresult.html', uname=user_name, selected_symptoms=selected_symptoms, error_message="Tidak ada hasil diagnosa yang ditemukan.", diagnosis_result=None, result_symptom_code=result_symptom_code, treatment_and_prevention=treatment_and_prevention)
+        return render_template('indexresult.html', uname=user_name, treatment_and_prevention=treatment_and_prevention, selected_symptoms=selected_symptoms, error_message="Tidak ada hasil diagnosa yang ditemukan.", diagnosis_result=None, result_symptom_code=result_symptom_code)
 
     diagnosis_result, treatment_and_prevention, similarities = result
     selected_gejala = session.get('selected_gejala_names', [])
     disease_name = diagnosis_result.get('disease_name')
 
-    return render_template('indexresult.html', diagnosis_result=diagnosis_result, uname=user_name, selected_symptoms=selected_symptoms, treatment_and_prevention=treatment_and_prevention, selected_gejala=selected_gejala, result_symptom_code=result_symptom_code, disease_name=disease_name, similarities=similarities)
-
+    return render_template('indexresult.html', treatment_and_prevention=treatment_and_prevention, diagnosis_result=diagnosis_result, uname=user_name, selected_symptoms=selected_symptoms, selected_gejala=selected_gejala, result_symptom_code=result_symptom_code, disease_name=disease_name, similarities=similarities)
 
 @app.route("/loginadm", methods=['GET', 'POST'])
 def loginadm():
@@ -117,7 +114,7 @@ def logout():
 def indiag():
     return render_template('indexinput.html')
 
-@app.route('/indexadm') #index
+@app.route('/indexadm', methods=['GET', 'POST']) #index
 def indexadm():
     cursor = get_database_cursor()
     try:
@@ -140,7 +137,7 @@ def indexadm():
         cursor.execute("SELECT * FROM users")
         users = cursor.fetchall()
 
-        return render_template('indexadm.html', total_gejala=total_gejala, total_pengobatan=total_pengobatan, total_pencegahan=total_pencegahan, total_penyakit=total_penyakit, users=users)
+        return render_template('indexadm.html', total_gejala=total_gejala, total_pengobatan=total_pengobatan, total_pencegahan=total_pencegahan, total_penyakit=total_penyakit, users=users, get_symptom_by_code=get_symptom_by_code, get_disease_by_code=get_disease_by_code)
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
@@ -297,6 +294,33 @@ def addbasis():
 
     return render_template('addbasis.html', diseases=diseases, symptoms=symptoms, kode_basis=id_basis)
 
+@app.route('/addbasisbaru', methods=['GET', 'POST'])
+def addbasisbaru():
+    if request.method == 'POST':
+        id_basis = kode_basis()
+        nama_penyakit = request.form.get('penyakit')
+        gejala1 = request.form.get('gejala1')
+        gejala2 = request.form.get('gejala2')
+        gejala3 = request.form.get('gejala3')
+        gejala4 = request.form.get('gejala4')
+        gejala5 = request.form.get('gejala5')
+
+        save_to_basis_table(id_basis, nama_penyakit, gejala1, gejala2, gejala3, gejala4, gejala5)
+        # Redirect ke halaman basis
+        return redirect(url_for('basis'))
+    # Perbarui dropdown untuk basis dan pencegahan
+    diseases = get_diseases()
+    symptoms = get_symptoms()
+    id_basis = kode_basis()
+
+    pil_gejala1 = request.args.get('gejala1')
+    pil_gejala2 = request.args.get('gejala2')
+    pil_gejala3 = request.args.get('gejala3')
+    pil_gejala4 = request.args.get('gejala4')
+    pil_gejala5 = request.args.get('gejala5')
+
+    return render_template('addbasisbaru.html', diseases=diseases, symptoms=symptoms, kode_basis=id_basis, pil_gejala1=pil_gejala1, pil_gejala2=pil_gejala2, pil_gejala3=pil_gejala3, pil_gejala4=pil_gejala4, pil_gejala5=pil_gejala5)
+
 @app.route('/detailbasis/<kode_basis>', methods=['GET', 'POST'])
 def detailbasis(kode_basis):
     data = get_detail_basis(kode_basis)
@@ -403,8 +427,8 @@ from flask import request, jsonify
 
 @app.route('/deletegejala/<kode_gejala>', methods=['DELETE'])
 def deletegejala(kode_gejala):
+    cursor = get_database_cursor()
     try:
-
         # Cek apakah gejala dengan kode_gejala tertentu ada di database
         cursor.execute("SELECT * FROM symptoms WHERE kode_gejala = %s", (kode_gejala,))
         gejala = cursor.fetchone()
@@ -427,8 +451,8 @@ def deletegejala(kode_gejala):
 
 @app.route('/deletepencegahan/<kode_pencegahan>', methods=['DELETE'])
 def deletepencegahan(kode_pencegahan):
+    cursor = get_database_cursor()
     try:
-
         # Cek apakah pencegahan dengan kode_pencegahan tertentu ada di database
         cursor.execute("SELECT * FROM preventions WHERE kode_pencegahan = %s", (kode_pencegahan,))
         pencegahan = cursor.fetchone()
@@ -451,8 +475,8 @@ def deletepencegahan(kode_pencegahan):
 
 @app.route('/deletepengobatan/<kode_pengobatan>', methods=['DELETE'])
 def deletepengobatan(kode_pengobatan):
+    cursor = get_database_cursor()
     try:
-
         # Cek apakah pengobatan dengan kode_pengobatan tertentu ada di database
         cursor.execute("SELECT * FROM treatments WHERE kode_pengobatan = %s", (kode_pengobatan,))
         pengobatan = cursor.fetchone()
@@ -506,8 +530,8 @@ def addpenyakit():
 
 @app.route('/deletepenyakit/<kode_penyakit>', methods=['DELETE'])
 def deletepenyakit(kode_penyakit):
+    cursor = get_database_cursor()
     try:
-
         # Cek apakah penyakit dengan kode_penyakit tertentu ada di database
         cursor.execute("SELECT * FROM diseases WHERE kode_penyakit = %s", (kode_penyakit,))
         penyakit = cursor.fetchone()
@@ -530,6 +554,7 @@ def deletepenyakit(kode_penyakit):
 
 @app.route('/deletebasis/<kode_basis>', methods=['DELETE'])
 def deletebasis(kode_basis):
+    cursor = get_database_cursor()
     try:
         # Cek apakah basis dengan kode_basis tertentu ada di database
         cursor.execute("SELECT * FROM basis WHERE kode_basis = %s", (kode_basis,))

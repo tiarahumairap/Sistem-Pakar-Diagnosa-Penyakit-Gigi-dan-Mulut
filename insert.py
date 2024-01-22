@@ -107,5 +107,6 @@ data_symptoms = [
 
 data_admins = [
     {"email": "20102196@ittelkom-pwt.ac.id", "password": "20102196"},
-    {"email": "tiaraputri2172@gmail.com", "password": "Humairaputri21"}
+    {"email": "tiaraputri2172@gmail.com", "password": "Humairaputri21"},
+    {"email": "user2024@gmail.com", "password": "user12345"}
 ]

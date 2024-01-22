@@ -1,6 +1,6 @@
 import mysql.connector
 from insert import data_treatments, data_preventions, data_symptoms, data_admins
-# Inisialisasi db sebagai objek global
+
 db = None
 
 def initialize_database():
@@ -40,7 +40,7 @@ def create_database():
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS basis (kode_basis VARCHAR(5) PRIMARY KEY, penyakit VARCHAR (255) NOT NULL, gejala1 VARCHAR(255), gejala2 VARCHAR(255), gejala3 VARCHAR(255), gejala4 VARCHAR(255), gejala5 VARCHAR(255), FOREIGN KEY (penyakit) REFERENCES diseases (kode_penyakit), FOREIGN KEY (gejala1) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala2) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala3) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala4) REFERENCES symptoms (kode_gejala), FOREIGN KEY (gejala5) REFERENCES symptoms (kode_gejala))""")
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(5) PRIMARY KEY, name VARCHAR(255) NOT NULL, age INT, jk CHAR(1) CHECK (jk IN ('L', 'P')), pil_gejala1 VARCHAR(5), pil_gejala2 VARCHAR(5), pil_gejala3 VARCHAR(5), pil_gejala4 VARCHAR(5), pil_gejala5 VARCHAR(5), similarity VARCHAR(4), hasil VARCHAR (5), FOREIGN KEY (pil_gejala1) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala2) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala3) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala4) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala5) REFERENCES symptoms (kode_gejala), FOREIGN KEY (hasil) REFERENCES diseases (kode_penyakit))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(5) PRIMARY KEY, name VARCHAR(255) NOT NULL, age INT, jk CHAR(1) CHECK (jk IN ('L', 'P')), pil_gejala1 VARCHAR(5), pil_gejala2 VARCHAR(5), pil_gejala3 VARCHAR(5), pil_gejala4 VARCHAR(5), pil_gejala5 VARCHAR(5), similarity VARCHAR(4), hasil VARCHAR (5), status VARCHAR(20) NOT NULL, FOREIGN KEY (pil_gejala1) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala2) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala3) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala4) REFERENCES symptoms (kode_gejala), FOREIGN KEY (pil_gejala5) REFERENCES symptoms (kode_gejala))")
 
     cursor.close()
 
@@ -569,9 +569,9 @@ def get_detail_basis(kode_basis):
 
 def update_users_table(user_id, new_data, diagnosis_result):
     try:
-        update_query = """UPDATE users SET pil_gejala1 = %s, pil_gejala2 = %s, pil_gejala3 = %s, pil_gejala4 = %s, pil_gejala5 = %s, similarity = %s, hasil = %s WHERE user_id = %s"""
+        update_query = """UPDATE users SET pil_gejala1 = %s, pil_gejala2 = %s, pil_gejala3 = %s, pil_gejala4 = %s, pil_gejala5 = %s, similarity = %s, hasil = %s, status = %s WHERE user_id = %s"""
 
-        params = [None] * 8
+        params = [None] * 9
 
         for i in range(min(5, len(new_data))):
             params[i] = new_data[i]
@@ -579,8 +579,9 @@ def update_users_table(user_id, new_data, diagnosis_result):
             if diagnosis_result and isinstance(diagnosis_result, tuple) and len(diagnosis_result) >= 2:
                 params[5] = diagnosis_result[0]['similarity']
                 params[6] = diagnosis_result[0]['kode_penyakit']
+                params[7] = diagnosis_result[0]['status']
 
-        params[7] = user_id
+        params[8] = user_id
 
         with db.cursor() as cursor:
             cursor.execute(update_query, tuple(params))
@@ -599,27 +600,21 @@ def calculate_similarity(selected_symptoms, disease_symptoms):
     cursor = get_database_cursor()
 
     for symptom in selected_symptoms:
-        # Ambil bobot gejala umum dari tabel symptoms
         cursor.execute("SELECT bobot FROM symptoms WHERE kode_gejala = %s", (symptom,))
         symptom_row = cursor.fetchone()
 
         if symptom_row:
             bobot = symptom_row['bobot']
         else:
-            # Handle kasus ketika gejala tidak ditemukan
-            # Misalnya, atur bobot ke nilai default
             bobot = 0
         # Periksa keberadaan gejala pada penyakit
         similarity = 1 if symptom in disease_symptoms else 0
-
-        # Hitung similarity dengan mempertimbangkan bobot
         total_similarity += similarity * bobot
         total_bobot_gejala += bobot
 
     # Bagi total similarity dengan jumlah bobot dari penyakit yang dipilih
     similarity = total_similarity / total_bobot_gejala
     return similarity
-
 
 def get_diagnosis(selected_symptoms):
     cursor = get_database_cursor()
@@ -629,12 +624,15 @@ def get_diagnosis(selected_symptoms):
         cursor.execute("SELECT penyakit, gejala1, gejala2, gejala3, gejala4, gejala5 FROM basis")
         basis_data = cursor.fetchall()
 
+        print("Gejala yang Dipilih:")
+        print(selected_symptoms)
         # Hitung kesamaan gejala untuk setiap penyakit
         similarities = []
         for basis in basis_data:
             disease_code = basis['penyakit']
             disease_name = result_disease_code(disease_code)
             disease_symptoms = [basis[f'gejala{i}'] for i in range(1, 6)]
+
             similarity = calculate_similarity(selected_symptoms, disease_symptoms)
             similarities.append({'kode_penyakit': disease_code, 'penyakit': disease_name, 'similarity': similarity})
 
@@ -645,13 +643,21 @@ def get_diagnosis(selected_symptoms):
         sorted_results = sorted(similarities, key=lambda x: x['similarity'], reverse=True)
 
         top_result = sorted_results[0]
+        similarity_value = top_result['similarity']
+
+        #threshold
+        if similarity_value >= 0.8:
+            status = '-'
+        else:
+            status = 'perlu ditinjau'
+
         diagnosis_result = {
             'kode_penyakit': top_result['kode_penyakit'],
             'similarity': f"{int(top_result['similarity'] * 100)}%",
-            'disease_name': top_result['penyakit']
+            'disease_name': top_result['penyakit'],
+            'status': status
         }
 
-        similarity_value = top_result['similarity']
         treatment_and_prevention = get_solution(diagnosis_result['kode_penyakit'])
         diagnosis_result['similarity'] = f"{int(similarity_value * 100)}%"
 
